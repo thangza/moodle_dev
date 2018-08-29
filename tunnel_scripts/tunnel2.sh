@@ -5,12 +5,13 @@
 # connection to dev2
 
 target_host="moodle-dev2.ms.wits.ac.za"
+#target_host_second=".ms.wits.ac.za"
 proxy_host="lamp.ms.wits.ac.za"
-username_lamp=$1
+username_proxy=$1
 local_port=3333
-target=22
+target_port=22
 
-echo "Connecting to ${proxy_host} on local: ${local_port}"
+echo "Connecting to ${proxy_host} on local port: ${local_port}"
 echo "..."
-ssh -L ${local_port}:${targer_host}:${target_port} ${username_lamp}@${proxy_host}
+ssh -L ${local_port}:${target_host}:${target_port} ${username_proxy}@${proxy_host}
 echo "Connection with ${proxy_host} closed."
