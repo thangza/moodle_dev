@@ -1,0 +1,16 @@
+language: php
+php:
+  - 7.1.1
+before_install:
+  - composer self-update --rollback
+install:
+  - composer require satooshi/php-coveralls:~0.6@stable
+  - composer install
+before_script:
+  - mkdir -p ./tests/logs
+script:
+  - phpunit --version
+  - composer dump-autoload
+#  - phpunit --coverage-clover ./tests/logs/clover.xml
+#after_script:
+#  - php vendor/bin/coveralls -v
