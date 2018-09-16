@@ -4,7 +4,7 @@
     },
     "autoload":{
       "classmap":[
-        "dev_1/witsoj"
+        "dev_1/witsoj/tests"
       ]
     }
 }
