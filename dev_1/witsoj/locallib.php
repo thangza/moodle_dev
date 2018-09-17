@@ -43,6 +43,10 @@ define('ASSIGNFEEDBACK_WITSOJ_MARKER_BUSY', 2);
 
 define('ASSIGNFEEDBACK_WITSOJ_MARKERTIMEOUT', 60);
 define('ASSIGNFEEDBACK_WITSOJ_SUBMISSIONTIMEOUT', 1);
+global $CFG;
+require_once($CFG->libdir . '/pagelib.php');
+
+
 /**
  * Library class for comment feedback plugin extending feedback plugin base class.
  *
@@ -852,11 +856,11 @@ class assign_feedback_witsoj extends assign_feedback_plugin {
 		    $feedback = $tc_result[$i]->oj_feedback;
 		    $grade = $tc_result[$i]->grade;
 		    $max = $tc_result[$i]->max_grade;
-		    
+		    #$icon_code = "<a href='feedback/witsoj/details.php?id=123&tc=$i'>!</a>" 
 		    if($result == ASSIGNFEEDBACK_WITSOJ_STATUS_PRESENTATIONERROR){
 		        $out .= "<tr style='color:#880'><td>&#10007;</td><td>TestCase $i</td><td>Presentation Error ($grade/$max)</td><td>$feedback</td></tr>";
 		    }else if($result == ASSIGNFEEDBACK_WITSOJ_STATUS_INCORRECT){
-			$out .= "<tr style='color:#A00'><td>&#10007;</td><td>TestCase $i</td><td>Failed ($grade/$max)</td><td>$feedback</td></tr>";
+			$out .= "<tr style='color:#A00'><td>&#10007;</td><td>TestCase $i</td><td>Failed ($grade/$max)</td><td>$feedback</td><td>ICON</td></tr>";
 		    }else if($result == ASSIGNFEEDBACK_WITSOJ_STATUS_ACCEPTED){
 			$out .= "<tr style='color:#070'><td>&#10004;</td><td>TestCase $i</td><td>Passed ($grade/$max)</td><td>$feedback</td></tr>";
 		    }else{
@@ -874,6 +878,7 @@ class assign_feedback_witsoj extends assign_feedback_plugin {
 	error_log("GRADE: " . $newgrade);
 	$grade = $this->assignment->get_user_grade($userid, true);
 	$grade->grade = $newgrade;
+	//$grade->grader = 3;
 	$this->assignment->update_grade($grade, false);
 
 	$feedback = $this->get_feedback_witsoj($grade->id);
@@ -1060,7 +1065,13 @@ class assign_feedback_witsoj extends assign_feedback_plugin {
             //$buttons .=  "<a class='btn btn-secondary' href='$prod'style='margin-bottom:5px;'>Prod</a><br/>";
 	    //$buttons .= "</form><br/>";
 	}
+	global $PAGE;
+	global $CFG ;
         if ($feedbackcomments) {
+	    $temp_id = $grade->id ;
+	    if($feedbackcomments->status == ASSIGNFEEDBACK_WITSOJ_STATUS_PENDING or $feedbackcomments->status == ASSIGNFEEDBACK_WITSOJ_STATUS_JUDGING){
+	    	$PAGE->requires->js( new moodle_url($CFG->wwwroot . "/mod/assign/feedback/witsoj/loadAjax.php?gradeid=".$temp_id) );
+	    }
             $text = format_text($feedbackcomments->commenttext,
                                 $feedbackcomments->commentformat,
                                 array('context' => $this->assignment->get_context()));
@@ -1069,9 +1080,9 @@ class assign_feedback_witsoj extends assign_feedback_plugin {
             // Show the view all link if the text has been shortened.
             $showviewlink = $short != $text;
 
-            return $buttons.$short;
+            return $buttons."<div id='tmp'>".$short."</div>";
         }
-        return $buttons;
+        return $buttons."<div id='tmp'></div>";
     }
 
     /**
@@ -1236,3 +1247,9 @@ class assign_feedback_witsoj extends assign_feedback_plugin {
         return (array) $this->get_config();
     }
 }
+
+
+
+
+
+
