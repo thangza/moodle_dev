@@ -12,17 +12,18 @@ setInterval(function(){
 		data:{sendID: id},
 		success: function(response){
 			console.log("Hello");
+			console.log(id);
 			if(response != "GRADED"){
 				$("#tmp").html(response);
 			}else{
 				location.reload() ;
 			}
 		},
-		error: function(){
-			alert("Error") ;
-		}	
+		error: function(status){
+			console.log(id);
+			alert(JSON.stringify(status,null,4)) ;
+		}
 
 	});
 
-},5000) 
-
+},1000) 

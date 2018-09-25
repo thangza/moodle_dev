@@ -19,6 +19,7 @@ global $DB;
 $feedbackcomment = $DB->get_record('assignfeedback_witsoj', array('grade'=>$gradeid));
 $feedbackstatus = $feedbackcomment->status ;
 $assignmentid = $feedbackcomment->assignment;
+// $current_time = $feedback-comment->timemodified;
 
 
 if($feedbackstatus  == ASSIGNFEEDBACK_WITSOJ_STATUS_PENDING){
@@ -29,10 +30,28 @@ if($feedbackstatus  == ASSIGNFEEDBACK_WITSOJ_STATUS_PENDING){
 		(SELECT * FROM mdl_assignfeedback_witsoj WHERE status= 0 ORDER BY timemodified ASC) B
 	    WHERE assignment= '$assignmentid') C
 	    WHERE grade = '$gradeid'";
-	$rec = $DB->get_records_sql($sql); // queries the datebase
+
+	$rec = $DB->get_records_sql($sql);
+
 	foreach($rec as $position => $v){
 		echo "Your position in the queue is " .$position;
 	}
+	// modifying the queue query
+	// query for the postion of the current user in the queue
+	// $sql1 = "SELECT COUNT(*) FROM mdl_assignfeedback_witsoj WHERE timemodified < '$current_time' AND status = 0";
+	// $sql2 = "SELECT COUNT(*) FROM mdl_assignfeedback_witsoj WHERE status = 0";
+	// $rec1 = $DB->get_records_sql($sql1);
+	// $rec2 = $DB->get_records_sql($sql2);
+
+	// $position = reset($rec1);
+	// $total_queue = reset($rec2);
+			// "SELECT COUNT(*) FROM mdl_assignfeedback_witsoj WHERE timemodified < '$current_time' AND STATUS = 0";
+			// "SELECT COUNT(*) FROM mdl_assignfeedback_witsoj WHERE status = 0";
+	// $rec = $DB->get_records_sql($sql); // queries the datebase
+	// echo $rec->count . " " .$rec2->count;
+	// echo $position;
+	// echo "Your position in the queue is ". $position . " out of " . $total_queue;
+
 
 }elseif ($feedbackstatus  == ASSIGNFEEDBACK_WITSOJ_STATUS_JUDGING){
 	console.log("reached elseif statement");
@@ -43,6 +62,4 @@ if($feedbackstatus  == ASSIGNFEEDBACK_WITSOJ_STATUS_PENDING){
 	echo "GRADED";
 	//echo $feedbackcomment->commenttext;
 }
-
-
 ?>

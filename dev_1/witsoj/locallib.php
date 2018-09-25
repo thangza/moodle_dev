@@ -42,7 +42,7 @@ define('ASSIGNFEEDBACK_WITSOJ_MARKER_BOOKED', 1);
 define('ASSIGNFEEDBACK_WITSOJ_MARKER_BUSY', 2);
 
 define('ASSIGNFEEDBACK_WITSOJ_MARKERTIMEOUT', 60);
-define('ASSIGNFEEDBACK_WITSOJ_SUBMISSIONTIMEOUT', 1);
+define('ASSIGNFEEDBACK_WITSOJ_SUBMISSIONTIMEOUT', 10);
 global $CFG;
 require_once($CFG->libdir . '/pagelib.php');
 
@@ -54,13 +54,15 @@ require_once($CFG->libdir . '/pagelib.php');
  * @copyright 2012 NetSpot {@link http://www.netspot.com.au}
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class assign_feedback_witsoj extends assign_feedback_plugin {
+class assign_feedback_witsoj extends assign_feedback_plugin
+{
 
     /**
      * Get the name of the online comment feedback plugin.
      * @return string
      */
-    public function get_name() {
+    public function get_name()
+    {
         return get_string('pluginname', 'assignfeedback_witsoj');
     }
 
@@ -71,7 +73,8 @@ class assign_feedback_witsoj extends assign_feedback_plugin {
      * @return stdClass|false The feedback comments for the given grade if it exists.
      *                        False if it doesn't.
      */
-    public function get_feedback_witsoj($gradeid) {
+    public function get_feedback_witsoj($gradeid)
+    {
         global $DB;
         return $DB->get_record('assignfeedback_witsoj', array('grade'=>$gradeid));
     }
@@ -83,7 +86,8 @@ class assign_feedback_witsoj extends assign_feedback_plugin {
      * @param mixed $grade - The grade data - may be null if there are no grades for this user (yet)
      * @return mixed - A html string containing the html form elements required for quickgrading
      */
-    public function get_quickgrading_html($userid, $grade) {
+    public function get_quickgrading_html($userid, $grade)
+    {
         $commenttext = '';
         if ($grade) {
             $feedbackcomments = $this->get_feedback_witsoj($grade->id);
@@ -109,7 +113,8 @@ class assign_feedback_witsoj extends assign_feedback_plugin {
      * @param stdClass $grade The grade
      * @return boolean - true if the quickgrading form element has been modified
      */
-    public function is_quickgrading_modified($userid, $grade) {
+    public function is_quickgrading_modified($userid, $grade)
+    {
         $commenttext = '';
         if ($grade) {
             $feedbackcomments = $this->get_feedback_witsoj($grade->id);
@@ -130,7 +135,8 @@ class assign_feedback_witsoj extends assign_feedback_plugin {
      * @param stdClass $data Data from the form submission.
      * @return boolean True if the comment feedback has been modified, else false.
      */
-    public function is_feedback_modified(stdClass $grade, stdClass $data) {
+    public function is_feedback_modified(stdClass $grade, stdClass $data)
+    {
         $commenttext = '';
         if ($grade) {
             $feedbackcomments = $this->get_feedback_witsoj($grade->id);
@@ -152,7 +158,8 @@ class assign_feedback_witsoj extends assign_feedback_plugin {
      *
      * @return boolean - True if the plugin supports quickgrading
      */
-    public function supports_quickgrading() {
+    public function supports_quickgrading()
+    {
         return false;
     }
 
@@ -161,7 +168,8 @@ class assign_feedback_witsoj extends assign_feedback_plugin {
      *
      * @return array An array of field names and descriptions. (name=>description, ...)
      */
-    public function get_editor_fields() {
+    public function get_editor_fields()
+    {
         return array('comments' => get_string('pluginname', 'assignfeedback_witsoj'));
     }
 
@@ -172,7 +180,8 @@ class assign_feedback_witsoj extends assign_feedback_plugin {
      * @param int $gradeid
      * @return string
      */
-    public function get_editor_text($name, $gradeid) {
+    public function get_editor_text($name, $gradeid)
+    {
         if ($name == 'comments') {
             $feedbackcomments = $this->get_feedback_witsoj($gradeid);
             if ($feedbackcomments) {
@@ -191,7 +200,8 @@ class assign_feedback_witsoj extends assign_feedback_plugin {
      * @param int $gradeid
      * @return string
      */
-    public function set_editor_text($name, $value, $gradeid) {
+    public function set_editor_text($name, $value, $gradeid)
+    {
         global $DB;
 
         if ($name == 'comments') {
@@ -219,7 +229,8 @@ class assign_feedback_witsoj extends assign_feedback_plugin {
      * @param stdClass $grade The grade
      * @return boolean - true if the grade changes were saved correctly
      */
-    public function save_quickgrading_changes($userid, $grade) {
+    public function save_quickgrading_changes($userid, $grade)
+    {
         global $DB;
         $feedbackcomment = $this->get_feedback_witsoj($grade->id);
         $quickgradecomments = optional_param('quickgrade_comments_' . $userid, null, PARAM_RAW);
@@ -245,537 +256,580 @@ class assign_feedback_witsoj extends assign_feedback_plugin {
      * @param stdClass $data
      * @return bool
      */
-    public function save_settings(stdClass $data) {
+    public function save_settings(stdClass $data)
+    {
         $this->set_config('language', $this->get_languages()[$data->assignfeedback_witsoj_language]);
         $this->set_config('cpu_limit', $this->get_cpu_limits()[$data->assignfeedback_witsoj_limit_cpu]);
         $this->set_config('mem_limit', $this->get_mem_limits()[$data->assignfeedback_witsoj_limit_mem]);
         $this->set_config('pe_ratio', $this->get_presentation_error_ratios()[$data->assignfeedback_witsoj_presentation_error_ratio]);
 
         if (isset($data->assignfeedback_witsoj_testcases)) {
-	        file_save_draft_area_files($data->assignfeedback_witsoj_testcases, $this->assignment->get_context()->id,
-                                       'assignfeedback_witsoj', ASSIGNFEEDBACK_WITSOJ_TESTCASE_FILEAREA, 0);
-	}
+            file_save_draft_area_files(
+                $data->assignfeedback_witsoj_testcases,
+                $this->assignment->get_context()->id,
+                                       'assignfeedback_witsoj',
+                ASSIGNFEEDBACK_WITSOJ_TESTCASE_FILEAREA,
+                0
+            );
+        }
 
-	if($data->assignfeedback_witsoj_enabled){
-		error_log("Searching for orphaned submissions.");
-		$this->rejudge_orphans();
-	}
+        if ($data->assignfeedback_witsoj_enabled) {
+            error_log("Searching for orphaned submissions.");
+            $this->rejudge_orphans();
+        }
 
         return true;
     }
 
-    public function get_languages(){
+    public function get_languages()
+    {
         return explode(',', get_config('assignfeedback_witsoj', 'languages'));
     }
 
-    public function get_cpu_limits(){
+    public function get_cpu_limits()
+    {
         return array("1", "5", "10", "30", "60");
     }
 
-    public function get_mem_limits(){
-	return array("1MB", "2MB", "4MB", "8MB", "16MB", "32MB", "64MB");
+    public function get_mem_limits()
+    {
+        return array("1MB", "2MB", "4MB", "8MB", "16MB", "32MB", "64MB");
     }
 
-    public function get_presentation_error_ratios(){
-	return array("1.0", "0.9", "0.8", "0.7", "0.6", "0.5", "0.4", "0.3", "0.2", "0.1", "0.0");
+    public function get_presentation_error_ratios()
+    {
+        return array("1.0", "0.9", "0.8", "0.7", "0.6", "0.5", "0.4", "0.3", "0.2", "0.1", "0.0");
     }
-    public function get_callback_url(){
-	global $CFG;
-        return $CFG->wwwroot . "/mod/assign/feedback/witsoj/insert_grade.php?id=" . $this->assignment->get_context()->instanceid; 
+    public function get_callback_url()
+    {
+        global $CFG;
+        return $CFG->wwwroot . "/mod/assign/feedback/witsoj/insert_grade.php?id=" . $this->assignment->get_context()->instanceid;
     }
-    public function get_rejudge_url($userid){
-	global $CFG;
-	$id = $this->assignment->get_context()->instanceid;
-        return $CFG->wwwroot . "/mod/assign/view.php?id=$id&action=viewpluginpage&pluginsubtype=assignfeedback&plugin=witsoj&pluginaction=rejudge&userid=$userid"; 
+    public function get_rejudge_url($userid)
+    {
+        global $CFG;
+        $id = $this->assignment->get_context()->instanceid;
+        return $CFG->wwwroot . "/mod/assign/view.php?id=$id&action=viewpluginpage&pluginsubtype=assignfeedback&plugin=witsoj&pluginaction=rejudge&userid=$userid";
     }
-    public function get_rejudge_all_url(){
-	global $CFG;
-	$id = $this->assignment->get_context()->instanceid;
-        return $CFG->wwwroot . "/mod/assign/view.php?id=$id&action=viewpluginpage&pluginsubtype=assignfeedback&plugin=witsoj&pluginaction=rejudgeall"; 
+    public function get_rejudge_all_url()
+    {
+        global $CFG;
+        $id = $this->assignment->get_context()->instanceid;
+        return $CFG->wwwroot . "/mod/assign/view.php?id=$id&action=viewpluginpage&pluginsubtype=assignfeedback&plugin=witsoj&pluginaction=rejudgeall";
     }
-    public function get_prod_url(){
-	global $CFG;
-	$id = $this->assignment->get_context()->instanceid;
-        return $CFG->wwwroot . "/mod/assign/view.php?id=$id&action=viewpluginpage&pluginsubtype=assignfeedback&plugin=witsoj&pluginaction=prod"; 
+    public function get_prod_url()
+    {
+        global $CFG;
+        $id = $this->assignment->get_context()->instanceid;
+        return $CFG->wwwroot . "/mod/assign/view.php?id=$id&action=viewpluginpage&pluginsubtype=assignfeedback&plugin=witsoj&pluginaction=prod";
     }
-    public function can_rejudge(){
-	if(has_capability("mod/assign:managegrades", $this->assignment->get_context())){
-		return true;
-	}else{
-		return false;
-	}
+    public function can_rejudge()
+    {
+        if (has_capability("mod/assign:managegrades", $this->assignment->get_context())) {
+            return true;
+        } else {
+            return false;
+        }
     }
-    public static function prod(){
-	self::clean();
-	while($marker = self::marker_book()){
-		if($marker){
-			error_log("Prod: booked marker $marker->id");
-			if(!self::judge_next_submission($marker)){ // Marker is freed if no submissions
-				error_log("No more submissions: $marker->id");
-				break;
-			}
-		}else{
-			error_log("Prod: no free marker");
-		}
-	}
+    public function get_details_url($userid)
+    {
+        global $CFG;
+        $id = $this->assignment->get_context()->instanceid;
+        return $CFG->wwwroot . "/mod/assign/view.php?id=$id&action=viewpluginpage&pluginsubtype=assignfeedback&plugin=witsoj&pluginaction=viewdetails&userid=$userid";
     }
-    public function rejudge($userid){
-	if(!$this->can_rejudge()){
+
+    public static function prod()
+    {
+        self::clean();
+        while ($marker = self::marker_book()) {
+            if ($marker) {
+                error_log("Prod: booked marker $marker->id");
+                if (!self::judge_next_submission($marker)) { // Marker is freed if no submissions
+                    error_log("No more submissions: $marker->id");
+                    break;
+                }
+            } else {
+                error_log("Prod: no free marker");
+            }
+        }
+    }
+    public function rejudge($userid)
+    {
+        if (!$this->can_rejudge()) {
             print("Cannot Rejudge: Missing Permission");
             return false;
-	}
-	print($userid . "<br/>");
-	error_log("rejudge:" . $userid);
-	$status = ASSIGNFEEDBACK_WITSOJ_STATUS_PENDING;
-	$text = "Rejudge Requested. Awaiting a free marker.";
-	$this->set_witsoj_status($userid, $status, $text);
+        }
+        print($userid . "<br/>");
+        error_log("rejudge:" . $userid);
+        $status = ASSIGNFEEDBACK_WITSOJ_STATUS_PENDING;
+        $text = "Rejudge Requested. Awaiting a free marker.";
+        $this->set_witsoj_status($userid, $status, $text);
     }
-    public function rejudge_all(){
-	// List of all user submissions (even ones created while the plugin is off)
-	if(!$this->can_rejudge()){
+    public function rejudge_all()
+    {
+        // List of all user submissions (even ones created while the plugin is off)
+        if (!$this->can_rejudge()) {
             print("Cannot Rejudge: Missing Permission");
             return false;
-	}
-	global $DB;
-	$sql = "SELECT userid FROM {assign_submission} s ".
-		" WHERE status = 'submitted' AND assignment =  ". $this->assignment->get_instance()->id . 
- 		" ORDER BY timemodified ASC ";
-	$rec = $DB->get_records_sql($sql);
-	var_dump($rec);
-	print("<br/>");
-	foreach($rec as $userid => $v){
-	    	$this->rejudge($userid);
-	}
-	return count($rec);
-	/*
-	if(count($rec) == 0){
-		return false;
-	}
-	$r = reset($rec);
-	$plugin = self::get_plugin($r);
-	$plugin->set_witsoj_status($r->userid, ASSIGNFEEDBACK_WITSOJ_STATUS_JUDGING, "Judging"); // TODO: Status Submitting
-	return $r;
-	*/
+        }
+        global $DB;
+        $sql = "SELECT userid FROM {assign_submission} s ".
+        " WHERE status = 'submitted' AND assignment =  ". $this->assignment->get_instance()->id .
+        " ORDER BY timemodified ASC ";
+        $rec = $DB->get_records_sql($sql);
+        var_dump($rec);
+        print("<br/>");
+        foreach ($rec as $userid => $v) {
+            $this->rejudge($userid);
+        }
+        return count($rec);
+        /*
+        if(count($rec) == 0){
+            return false;
+        }
+        $r = reset($rec);
+        $plugin = self::get_plugin($r);
+        $plugin->set_witsoj_status($r->userid, ASSIGNFEEDBACK_WITSOJ_STATUS_JUDGING, "Judging"); // TODO: Status Submitting
+        return $r;
+        */
     }
-    public function rejudge_orphans(){
-	// List of all user submissions (even ones created while the plugin is off)
-	global $DB;
-	$id = $this->assignment->get_instance()->id;
-	error_log("Orphan Search: $id");
-	$sql = "SELECT s.id, s.userid FROM {assign_submission} s LEFT OUTER JOIN {assignfeedback_witsoj} f ".
-			"ON s.assignment = f.assignment AND s.userid = f.userid ".
-			"WHERE s.assignment = $id AND f.assignment is null AND s.status='submitted'".
-			"ORDER BY s.timemodified ASC "; // To find all orphans remove the $id from this query.
-			// Note that the rejudge has to take place from the plugin the orphans belong to.
-	$rec = $DB->get_records_sql($sql);
-	$n = count($rec);
-	error_log("Found $n orphaned submissions when enablling witsoj on assignment $id. Rejudging.");
-	foreach($rec as $k => $v){
-		error_log("Orphan: " . $v->userid);
-	    	$this->rejudge($v->userid);
-	}
-	return $n;
+    public function rejudge_orphans()
+    {
+        // List of all user submissions (even ones created while the plugin is off)
+        global $DB;
+        $id = $this->assignment->get_instance()->id;
+        error_log("Orphan Search: $id");
+        $sql = "SELECT s.id, s.userid FROM {assign_submission} s LEFT OUTER JOIN {assignfeedback_witsoj} f ".
+            "ON s.assignment = f.assignment AND s.userid = f.userid ".
+            "WHERE s.assignment = $id AND f.assignment is null AND s.status='submitted'".
+            "ORDER BY s.timemodified ASC "; // To find all orphans remove the $id from this query.
+        // Note that the rejudge has to take place from the plugin the orphans belong to.
+        $rec = $DB->get_records_sql($sql);
+        $n = count($rec);
+        error_log("Found $n orphaned submissions when enablling witsoj on assignment $id. Rejudging.");
+        foreach ($rec as $k => $v) {
+            error_log("Orphan: " . $v->userid);
+            $this->rejudge($v->userid);
+        }
+        return $n;
     }
-    public static function clean(){
-	global $DB;
-	$now = new DateTime("now", core_date::get_user_timezone_object());
-	$nowts = $now->getTimestamp();
-	$sql = "UPDATE {assignfeedback_witsoj} m SET status='".ASSIGNFEEDBACK_WITSOJ_STATUS_TIMEOUT."',commenttext = 'Marker did not respond with a mark.' ".
-		" WHERE status = '".ASSIGNFEEDBACK_WITSOJ_STATUS_JUDGING."' AND :current-timemodified > ".ASSIGNFEEDBACK_WITSOJ_SUBMISSIONTIMEOUT. // If the marker is free, or hasn't delivered a mark in the last 2 minutes
-		" LIMIT 1";
-	$rec = $DB->execute($sql, array("current"=>$nowts));
+    public static function clean()
+    {
+        global $DB;
+        $now = new DateTime("now", core_date::get_user_timezone_object());
+        $nowts = $now->getTimestamp();
+        $sql = "UPDATE {assignfeedback_witsoj} m SET status='".ASSIGNFEEDBACK_WITSOJ_STATUS_TIMEOUT."',commenttext = 'Marker did not respond with a mark.' ".
+        " WHERE status = '".ASSIGNFEEDBACK_WITSOJ_STATUS_JUDGING."' AND :current-timemodified > ".ASSIGNFEEDBACK_WITSOJ_SUBMISSIONTIMEOUT. // If the marker is free, or hasn't delivered a mark in the last 2 minutes
+        " LIMIT 1";
+        $rec = $DB->execute($sql, array("current"=>$nowts));
     }
-   /**                                                                                                                             
-     * Return a list of the grading actions supported by this plugin.                                                               
-     *                                                                                                                              
-     * A grading action is a page that is not specific to a user but to the whole assignment.                                       
-     * @return array - An array of action and description strings.                                                                  
-     *                 The action will be passed to grading_action.                                                                 
-     */                                                                                                                             
-    public function get_grading_actions() {                                                                                         
-        return array("rejudgeall" => "Rejudge All", "rejudgeorphans" => "Rejudge Orphans", "prod" => "Prod Markers");                                                                                                             
-    }                  
+    /**
+      * Return a list of the grading actions supported by this plugin.
+      *
+      * A grading action is a page that is not specific to a user but to the whole assignment.
+      * @return array - An array of action and description strings.
+      *                 The action will be passed to grading_action.
+      */
+    public function get_grading_actions()
+    {
+        return array("rejudgeall" => "Rejudge All", "rejudgeorphans" => "Rejudge Orphans", "prod" => "Prod Markers");
+    }
 
-   /**                                                                                                                             
-     * Show a grading action form                                                                                                   
-     *                                                                                                                              
-     * @param string $gradingaction The action chosen from the grading actions menu                                                 
-     * @return string The page containing the form                                                                                  
-     */                                                                                                                             
-    public function grading_action($gradingaction) {
-	error_log($gradingaction); 
-	if($gradingaction == "rejudgeall"){
-		error_log("RO All");
-		$this->rejudge_all();
-	}elseif($gradingaction == "ro"){
-		error_log("Orpgna");
-		$this->rejudge_orphans();
-	}                                                
-        return '';                                                                                                                  
-    }   
+    /**
+      * Show a grading action form
+      *
+      * @param string $gradingaction The action chosen from the grading actions menu
+      * @return string The page containing the form
+      */
+    public function grading_action($gradingaction)
+    {
+        error_log($gradingaction);
+        if ($gradingaction == "rejudgeall") {
+            error_log("RO All");
+            $this->rejudge_all();
+        } elseif ($gradingaction == "ro") {
+            error_log("Orpgna");
+            $this->rejudge_orphans();
+        }
+        return '';
+    }
 
-    public static function atomically_book_submission($feedbackid){
-	//return true;
-	global $CFG;
+    public static function atomically_book_submission($feedbackid)
+    {
+        //return true;
+        global $CFG;
         $conn = new mysqli($CFG->dbhost, $CFG->dbuser, $CFG->dbpass, $CFG->dbname);
         if ($conn->connect_error) {
-	    error_log("Connection failed: " . $conn->connect_error);
+            error_log("Connection failed: " . $conn->connect_error);
             die("Connection failed: " . $conn->connect_error);
         }
-	$pre = $CFG->prefix;
-	$sql = "UPDATE ${pre}assignfeedback_witsoj SET status=". ASSIGNFEEDBACK_WITSOJ_STATUS_JUDGING ." WHERE id=" . $feedbackid ." AND status=" . ASSIGNFEEDBACK_WITSOJ_STATUS_PENDING;
-	error_log($sql);
-	$conn->query($sql);
-	$n = $conn->affected_rows;
-	$conn->close();
-	error_log("ATOMIC: " . $n);
-	return $n > 0;
+        $pre = $CFG->prefix;
+        $sql = "UPDATE ${pre}assignfeedback_witsoj SET status=". ASSIGNFEEDBACK_WITSOJ_STATUS_JUDGING ." WHERE id=" . $feedbackid ." AND status=" . ASSIGNFEEDBACK_WITSOJ_STATUS_PENDING;
+        error_log($sql);
+        $conn->query($sql);
+        $n = $conn->affected_rows;
+        $conn->close();
+        error_log("ATOMIC: " . $n);
+        return $n > 0;
     }
 
 
     /*public static function set_witsoj_status_direct($assignment, $feedback, $status, $text){
-	global $DB;
-	$now = new DateTime("now", core_date::get_user_timezone_object());
-	if($feedback){
-		$feedback->status = $status;
-		$feedback->commenttext = $text;
+    global $DB;
+    $now = new DateTime("now", core_date::get_user_timezone_object());
+    if($feedback){
+        $feedback->status = $status;
+        $feedback->commenttext = $text;
                 $feedback->commentformat = FORMAT_HTML;
-		$feedback->timemodified = $now->getTimestamp();
-		return $DB->update_record('assignfeedback_witsoj', $feedback);
-	}else{
-		$feedback = new stdClass();
-		$feedback->assignment = $assignment->get_instance()->id;
-		$feedback->grade = $grade->id;
-		$feedback->commenttext = $text;
+        $feedback->timemodified = $now->getTimestamp();
+        return $DB->update_record('assignfeedback_witsoj', $feedback);
+    }else{
+        $feedback = new stdClass();
+        $feedback->assignment = $assignment->get_instance()->id;
+        $feedback->grade = $grade->id;
+        $feedback->commenttext = $text;
                 $feedback->commentformat = FORMAT_HTML;
-		$feedback->status = $status;
-		$feedback->timemodified = $now->getTimestamp();
-		return $DB->insert_record('assignfeedback_witsoj', $feedback) > 0;
-	}
-	return false;	
+        $feedback->status = $status;
+        $feedback->timemodified = $now->getTimestamp();
+        return $DB->insert_record('assignfeedback_witsoj', $feedback) > 0;
+    }
+    return false;
     }*/
-    public function set_witsoj_status($userid, $status, $text){
-	global $DB;
-	$grade = $this->assignment->get_user_grade($userid, true);
-	$feedback = $this->get_feedback_witsoj($grade->id);
-	// Atomically book the submission if its for judging
-	error_log("TEXT: ". $text);
-        if($feedback->status == ASSIGNFEEDBACK_WITSOJ_STATUS_PENDING and $status == ASSIGNFEEDBACK_WITSOJ_STATUS_JUDGING){
-		error_log("Doing atomic booking");
-		if(!self::atomically_book_submission($feedback->id)){
-			return false;
-		}
-		$feedback = $this->get_feedback_witsoj($grade->id);
-	}
+    public function set_witsoj_status($userid, $status, $text)
+    {
+        global $DB;
+        $grade = $this->assignment->get_user_grade($userid, true);
+        $feedback = $this->get_feedback_witsoj($grade->id);
+        // Atomically book the submission if its for judging
+        error_log("TEXT: ". $text);
+        if ($feedback->status == ASSIGNFEEDBACK_WITSOJ_STATUS_PENDING and $status == ASSIGNFEEDBACK_WITSOJ_STATUS_JUDGING) {
+            error_log("Doing atomic booking");
+            if (!self::atomically_book_submission($feedback->id)) {
+                return false;
+            }
+            $feedback = $this->get_feedback_witsoj($grade->id);
+        }
 
-	if($status == ASSIGNFEEDBACK_WITSOJ_STATUS_PENDING or $status == ASSIGNFEEDBACK_WITSOJ_STATUS_JUDGING){
-		error_log("Pending/Judging Status Change");
-	        $grade->grade = null;
-	        $this->assignment->update_grade($grade, false);
-	}
+        if ($status == ASSIGNFEEDBACK_WITSOJ_STATUS_PENDING or $status == ASSIGNFEEDBACK_WITSOJ_STATUS_JUDGING) {
+            error_log("Pending/Judging Status Change");
+            $grade->grade = null;
+            $this->assignment->update_grade($grade, false);
+        }
 
-	$now = new DateTime("now", core_date::get_user_timezone_object());
-	if($feedback){
-		error_log("Status: " . $feedback->status);
-		if($feedback->status == ASSIGNFEEDBACK_WITSOJ_STATUS_JUDGING and $status == ASSIGNFEEDBACK_WITSOJ_STATUS_PENDING){
-			error_log("Fail: " . substr( $feedback->ojfeedback , 0, 6));
-			if(substr( $feedback->ojfeedback , 0, 6) === "Failed"){
-				error_log("Multiple failures, aborting submission.");
-				$feedback->status = ASSIGNFEEDBACK_WITSOJ_STATUS_ABORTED;
-				$feedback->ojfeedback = "Failed to submit to marker multiple times. Aborted.";
-				$text = $feedback->ojfeedback;
-			}else{
-				error_log("First failure, retrying submission.");
-				$feedback->status = ASSIGNFEEDBACK_WITSOJ_STATUS_PENDING;
-				$feedback->ojfeedback = "Failed to submit to marker. Retrying.";
-			}
-		}else{
-			$feedback->status = $status;
-		}
-		$feedback->commenttext = $text;
-                $feedback->commentformat = FORMAT_HTML;
-		$feedback->timemodified = $now->getTimestamp();
-		$feedback->assignmentcontextid = $this->assignment->get_context()->instanceid;
-		$feedback->userid = $userid;
-		return $DB->update_record('assignfeedback_witsoj', $feedback);
-	}else{
-		$feedback = new stdClass();
-		$feedback->assignment = $this->assignment->get_instance()->id;
-		$feedback->grade = $grade->id;
-		$feedback->commenttext = $text;
-                $feedback->commentformat = FORMAT_HTML;
-		$feedback->status = $status;
-		$feedback->timemodified = $now->getTimestamp();
-		$feedback->assignmentcontextid = $this->assignment->get_context()->instanceid;
-		$feedback->userid = $userid;
-		return $DB->insert_record('assignfeedback_witsoj', $feedback) > 0;
-	}
+        $now = new DateTime("now", core_date::get_user_timezone_object());
+        if ($feedback) {
+            error_log("Status: " . $feedback->status);
+            if ($feedback->status == ASSIGNFEEDBACK_WITSOJ_STATUS_JUDGING and $status == ASSIGNFEEDBACK_WITSOJ_STATUS_PENDING) {
+                error_log("Fail: " . substr($feedback->ojfeedback, 0, 6));
+                if (substr($feedback->ojfeedback, 0, 6) === "Failed") {
+                    error_log("Multiple failures, aborting submission.");
+                    $feedback->status = ASSIGNFEEDBACK_WITSOJ_STATUS_ABORTED;
+                    $feedback->ojfeedback = "Failed to submit to marker multiple times. Aborted.";
+                    $text = $feedback->ojfeedback;
+                } else {
+                    error_log("First failure, retrying submission.");
+                    $feedback->status = ASSIGNFEEDBACK_WITSOJ_STATUS_PENDING;
+                    $feedback->ojfeedback = "Failed to submit to marker. Retrying.";
+                }
+            } else {
+                $feedback->status = $status;
+            }
+            $feedback->commenttext = $text;
+            $feedback->commentformat = FORMAT_HTML;
+            $feedback->timemodified = $now->getTimestamp();
+            $feedback->assignmentcontextid = $this->assignment->get_context()->instanceid;
+            $feedback->userid = $userid;
+            return $DB->update_record('assignfeedback_witsoj', $feedback);
+        } else {
+            $feedback = new stdClass();
+            $feedback->assignment = $this->assignment->get_instance()->id;
+            $feedback->grade = $grade->id;
+            $feedback->commenttext = $text;
+            $feedback->commentformat = FORMAT_HTML;
+            $feedback->status = $status;
+            $feedback->timemodified = $now->getTimestamp();
+            $feedback->assignmentcontextid = $this->assignment->get_context()->instanceid;
+            $feedback->userid = $userid;
+            return $DB->insert_record('assignfeedback_witsoj', $feedback) > 0;
+        }
     }
 
-    public function get_marker_data($userid, $pathnamehash = null){
-	$data = array();
-	$data["userid"]    = $userid;
-	$data["language"]  = $this->get_config("language");
-	$data["cpu_limit"] = $this->get_config("cpu_limit");
-	$data["mem_limit"] = $this->get_config("mem_limit");
-	$pe =$this->get_config("pe_ratio");
-	if($pe == null){
-		$pe = 0;
-	}
-	$data["pe_ratio"]  = floatval($pe);
-	$data["callback"]  = $this->get_callback_url();
+    public function get_marker_data($userid, $pathnamehash = null)
+    {
+        $data = array();
+        $data["userid"]    = $userid;
+        $data["language"]  = $this->get_config("language");
+        $data["cpu_limit"] = $this->get_config("cpu_limit");
+        $data["mem_limit"] = $this->get_config("mem_limit");
+        $pe =$this->get_config("pe_ratio");
+        if ($pe == null) {
+            $pe = 0;
+        }
+        $data["pe_ratio"]  = floatval($pe);
+        $data["callback"]  = $this->get_callback_url();
 
-	$fs = get_file_storage();	
-	if ($files = $fs->get_area_files($this->assignment->get_context()->id, 'assignfeedback_witsoj', ASSIGNFEEDBACK_WITSOJ_TESTCASE_FILEAREA, '0', 'sortorder', false)) {
-		$file = reset($files);
-		$testcase = array();
-		$fileurl = \moodle_url::make_pluginfile_url(
-				$file->get_contextid(), 
-				$file->get_component(), 
-				$file->get_filearea(), 
-				$file->get_itemid(), 
-				$file->get_filepath(), 
-				$file->get_filename());
-		$download_url = $fileurl->get_port() ? 
-							$fileurl->get_scheme() . '://' . $fileurl->get_host() . $fileurl->get_path() . ':' . $fileurl->get_port()
-							: $fileurl->get_scheme() . '://' . $fileurl->get_host() . $fileurl->get_path();
-		$testcase["url"] = $download_url;
-		$testcase["contenthash"] = $file->get_contenthash();
-		$testcase["pathnamehash"] = $file->get_pathnamehash();
-		$data["testcase"] = $testcase;
-	}else{
-		print("E1"); //TODO get rid of this
-		return null;
-	}
+        $fs = get_file_storage();
+        if ($files = $fs->get_area_files($this->assignment->get_context()->id, 'assignfeedback_witsoj', ASSIGNFEEDBACK_WITSOJ_TESTCASE_FILEAREA, '0', 'sortorder', false)) {
+            $file = reset($files);
+            $testcase = array();
+            $fileurl = \moodle_url::make_pluginfile_url(
+                $file->get_contextid(),
+                $file->get_component(),
+                $file->get_filearea(),
+                $file->get_itemid(),
+                $file->get_filepath(),
+                $file->get_filename()
+        );
+            $download_url = $fileurl->get_port() ?
+                            $fileurl->get_scheme() . '://' . $fileurl->get_host() . $fileurl->get_path() . ':' . $fileurl->get_port()
+                            : $fileurl->get_scheme() . '://' . $fileurl->get_host() . $fileurl->get_path();
+            $testcase["url"] = $download_url;
+            $testcase["contenthash"] = $file->get_contenthash();
+            $testcase["pathnamehash"] = $file->get_pathnamehash();
+            $data["testcase"] = $testcase;
+        } else {
+            print("E1"); //TODO get rid of this
+            return null;
+        }
 
-	$fs = get_file_storage();
-	$file = null;
-	if($pathnamehash == null){
-		// Get submission from database
-		global $DB;
-		$arr = array('contextid'=>$this->assignment->get_context()->id,
-						'component'=>'assignsubmission_file',
-						'filearea'=>ASSIGNSUBMISSION_FILE_FILEAREA,
-						'userid'=>$userid);
-		//var_dump($arr);
-		$rec = $DB->get_records_sql('SELECT pathnamehash FROM {files}'.
-						' WHERE contextid = :contextid AND component = :component'.
-						' AND filearea = :filearea AND userid = :userid AND NOT filename = "."',
-						$arr);
-		if(count($rec) == 1){
-			$pathnamehash = reset($rec)->pathnamehash;
-		}else{
-			print("E4"); // TODO Deal with not getting a file.
-			var_dump($rec);
-			$pathnamehash = null;
-			return null;
-		}
-	}
-	if($pathnamehash != null){
-		// File Path Provided
-		$file = $fs->get_file_by_hash($pathnamehash);
-		if (!$file or $file->is_directory()) {
-			print("E2");
-			return null;
-		}
-	}else{
-		print("E5");	// TODO
-		return null;	
-	}
-	$source = array();
-	$source["content"] = base64_encode($file->get_content());
-	$source["ext"] = pathinfo($file->get_filename(), PATHINFO_EXTENSION);
-	$data["source"] = $source;
-	
-	return $data;
+        $fs = get_file_storage();
+        $file = null;
+        if ($pathnamehash == null) {
+            // Get submission from database
+            global $DB;
+            $arr = array('contextid'=>$this->assignment->get_context()->id,
+                        'component'=>'assignsubmission_file',
+                        'filearea'=>ASSIGNSUBMISSION_FILE_FILEAREA,
+                        'userid'=>$userid);
+            //var_dump($arr);
+            $rec = $DB->get_records_sql(
+            'SELECT pathnamehash FROM {files}'.
+                        ' WHERE contextid = :contextid AND component = :component'.
+                        ' AND filearea = :filearea AND userid = :userid AND NOT filename = "."',
+                        $arr
+        );
+            if (count($rec) == 1) {
+                $pathnamehash = reset($rec)->pathnamehash;
+            } else {
+                print("E4"); // TODO Deal with not getting a file.
+                var_dump($rec);
+                $pathnamehash = null;
+                return null;
+            }
+        }
+        if ($pathnamehash != null) {
+            // File Path Provided
+            $file = $fs->get_file_by_hash($pathnamehash);
+            if (!$file or $file->is_directory()) {
+                print("E2");
+                return null;
+            }
+        } else {
+            print("E5");	// TODO
+            return null;
+        }
+        $source = array();
+        $source["content"] = base64_encode($file->get_content());
+        $source["ext"] = pathinfo($file->get_filename(), PATHINFO_EXTENSION);
+        $data["source"] = $source;
+
+        return $data;
     }
-    public static function post_to_marker($marker, $data){
-	// Setup cURL
-	error_log("Posting:" . $data["userid"]);
-	$data['witsoj_token'] = get_config('assignfeedback_witsoj', 'secret');
-	$data['markerid'] = $marker->id;
+    public static function post_to_marker($marker, $data)
+    {
+        // Setup cURL
+        error_log("Posting:" . $data["userid"]);
+        $data['witsoj_token'] = get_config('assignfeedback_witsoj', 'secret');
+        $data['markerid'] = $marker->id;
 
-	$ch = curl_init($marker->url);
-	curl_setopt_array($ch, array(
-	    CURLOPT_POST => count($data),
-	    CURLOPT_RETURNTRANSFER => TRUE,
-	    CURLOPT_HTTPHEADER => array(
-		//'Content-Type: application/json'
-		'Content-Type: text/plain'
-	    ),
-	    CURLOPT_POSTFIELDS => json_encode($data)
-	));
+        $ch = curl_init($marker->url);
+        curl_setopt_array($ch, array(
+        CURLOPT_POST => count($data),
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_HTTPHEADER => array(
+        //'Content-Type: application/json'
+        'Content-Type: text/plain'
+        ),
+        CURLOPT_POSTFIELDS => json_encode($data)
+    ));
 
-	// Send the request
-	$response = curl_exec($ch);
+        // Send the request
+        $response = curl_exec($ch);
 
-	// Check for errors
-	if($response === FALSE){
-	    error_log("Curl error");
-	    die("Curl Error: " . curl_error($ch));
-	}
+        // Check for errors
+        if ($response === false) {
+            error_log("Curl error");
+            die("Curl Error: " . curl_error($ch));
+        }
 
-	// Decode the response
-	$responseData = json_decode($response, TRUE);
+        // Decode the response
+        $responseData = json_decode($response, true);
 
-	// Print the date from the response
-	//var_dump("Response: " . $response);
-	//print("<br/>");
-	//var_dump($responseData);
-	return $responseData;
-    }
-
-    public static function get_plugin($submission){
-	list ($course, $cm) = get_course_and_cm_from_cmid($submission->assignmentcontextid, 'assign');
-	$context = context_module::instance($cm->id);
-	$assign = new assign($context, $cm, $course);
-	$plugin = $assign->get_feedback_plugin_by_type("witsoj");
-	if(!$plugin->is_enabled()){
-		die('{"status" : "Coding Error"}');
-	}
-	return $plugin;
+        // Print the date from the response
+        //var_dump("Response: " . $response);
+        //print("<br/>");
+        //var_dump($responseData);
+        return $responseData;
     }
 
-    public static function judge_next_submission($marker = null, $submission = null){
-	if($marker == null or $marker == false){
-		// Check if there is a free marker
-		$marker = self::marker_book();
-	}//else{
-	//	$marker = self::marker_book($marker);
-	//}
-	if($marker == null or $marker == false){ // TODO check that submission is null, otherwise unbook it.
-		error_log("No marker.");
-		// Still no free marker, nothing to do
-		return false;
-	}
-
-	if($submission == null){
-		error_log("###### No Submission Preloaded ######");
-		$submission = self::fetch_pending_submission();
-	}
-	if($submission == false){
-		error_log("No submission to fetch. Freeing Marker.");
-		// There is no submission, free the marker
-		self::marker_free($marker, false);
-		return false;
-	}
-
-	$plugin = self::get_plugin($submission);
-	if($plugin == null){
-		error_log("Coding error123");
-		die("Coding Error");
-	}
-	$userid = $submission->userid;
-	// NB return whether there was a submission and marker available for judging. Not whether marking was successful.
-	$plugin->judge($marker, $userid);
-	return true;
+    public static function get_plugin($submission)
+    {
+        list($course, $cm) = get_course_and_cm_from_cmid($submission->assignmentcontextid, 'assign');
+        $context = context_module::instance($cm->id);
+        $assign = new assign($context, $cm, $course);
+        $plugin = $assign->get_feedback_plugin_by_type("witsoj");
+        if (!$plugin->is_enabled()) {
+            die('{"status" : "Coding Error"}');
+        }
+        return $plugin;
     }
 
-    public function judge($marker, $userid, $pathnamehash = null){
-	// Data To Send (including testcase metadata, student source, language, limits, pe_ratio, and callback
-	$data = $this->get_marker_data($userid, $pathnamehash);
-	if($data == null){
-		$this->set_witsoj_status($userid, ASSIGNFEEDBACK_WITSOJ_STATUS_ABORTED, 'Unable to prepare data. Aborted.');
-		return false;
-	}
-	// Send data to the marker
-	$check = $this->post_to_marker($marker, $data);
-	error_log("CHECK: " . print_r($check,true));
-	error_log("CHECK: " . $check["status"]);
-	if($check["status"] == "0"){
-		$this->set_witsoj_status($userid, ASSIGNFEEDBACK_WITSOJ_STATUS_JUDGING, 'Delivered to marker.');
-		self::marker_busy($marker);
-		return true;
-	}else{
-		$this->set_witsoj_status($userid, ASSIGNFEEDBACK_WITSOJ_STATUS_PENDING, 'Failed to deliver to marker. Retrying.');
-		return false;
-	}
+    public static function judge_next_submission($marker = null, $submission = null)
+    {
+        if ($marker == null or $marker == false) {
+            // Check if there is a free marker
+            $marker = self::marker_book();
+        }//else{
+    //	$marker = self::marker_book($marker);
+    //}
+    if ($marker == null or $marker == false) { // TODO check that submission is null, otherwise unbook it.
+        error_log("No marker.");
+        // Still no free marker, nothing to do
+        return false;
     }
-    public static function fetch_pending_submission(){
-	global $DB;
-	$success = false;
-	while(!$success){
-		$sql = "SELECT * FROM {assignfeedback_witsoj} s ".
-			" WHERE status = 0 ".
-	 		" ORDER BY timemodified ASC ".
-			" LIMIT 1";
-		$rec = $DB->get_records_sql($sql);
-		if(count($rec) == 0){
-			return false;
-		}
-		$r = reset($rec);
-		$plugin = self::get_plugin($r);
-		$success = $plugin->set_witsoj_status($r->userid, ASSIGNFEEDBACK_WITSOJ_STATUS_JUDGING, "Submitting to marker."); // TODO: Status Submitting
-		if(!$success){
-			error_log("Selected submission scooped by another thread. Searching for another.");
-		}
-	}
-	return $r;
-    }
-    public static function marker_free_by_id($markerid){
-	// Get marker with lastseen > 2minutes (assume its free)
-	global $DB;
-	$now = new DateTime("now", core_date::get_user_timezone_object());
-	$nowts = $now->getTimestamp();
-	$sql = "SELECT * FROM {assignfeedback_witsoj_mkr} m ".
-		" WHERE id = :markerid ". // If the marker is free, or hasn't delivered a mark in the last 2 minutes
-		" LIMIT 1";
-	$rec = $DB->get_records_sql($sql, array("markerid"=>$markerid));
-	if(count($rec) == 0){
-		return false;
-	}
-	$r = reset($rec);
-	$r->lastseen = $nowts;
-	$r->status = ASSIGNFEEDBACK_WITSOJ_MARKER_FREE;
-	$DB->update_record('assignfeedback_witsoj_mkr', $r);
-	return $r;
-    }
-    public static function marker_free($marker, $seen=true){
-	global $DB;
-	$now = new DateTime("now", core_date::get_user_timezone_object());
-	if ($seen){
-		$nowts = $now->getTimestamp();	
-		$marker->lastseen = $nowts;
-	}
-	$marker->status = ASSIGNFEEDBACK_WITSOJ_MARKER_FREE;
-	$DB->update_record('assignfeedback_witsoj_mkr', $marker);
-	return $marker;
 
-    }
-    public static function marker_busy($marker){
-	// Get marker with lastseen > 2minutes (assume its free)
-	global $DB;
-	$now = new DateTime("now", core_date::get_user_timezone_object());
-	$nowts = $now->getTimestamp();
-	$marker->lastseen = $nowts;
-	$marker->status = ASSIGNFEEDBACK_WITSOJ_MARKER_BUSY;
-	$DB->update_record('assignfeedback_witsoj_mkr', $marker);
-	return $marker;
-    }
-    public static function marker_book($markerid = null){
-	// Get marker with lastseen > 2minutes (assume its free)
-	global $DB;
-	$now = new DateTime("now", core_date::get_user_timezone_object());
-	$nowts = $now->getTimestamp();
-	if($markerid == null){
-		$sql = "SELECT * FROM {assignfeedback_witsoj_mkr} m ".
-			" WHERE status = 0 OR :current-lastseen >  ".ASSIGNFEEDBACK_WITSOJ_MARKERTIMEOUT. // If the marker is free, or hasn't delivered a mark in the last 2 minutes
-			" LIMIT 1";
-		$rec = $DB->get_records_sql($sql, array("current"=>$nowts));
-	}else{
-		$sql = "SELECT * FROM {assignfeedback_witsoj_mkr} m ".
-			" WHERE id = :current";
-		$rec = $DB->get_records_sql($sql, array("current"=>$markerid));
-	}
+        if ($submission == null) {
+            error_log("###### No Submission Preloaded ######");
+            $submission = self::fetch_pending_submission();
+        }
+        if ($submission == false) {
+            error_log("No submission to fetch. Freeing Marker.");
+            // There is no submission, free the marker
+            self::marker_free($marker, false);
+            return false;
+        }
 
-	if(count($rec) == 0){
-		return false;
-	}
-	$r = reset($rec);
-	$r->lastseen = $nowts;
-	$r->status = ASSIGNFEEDBACK_WITSOJ_MARKER_BOOKED;
-	$DB->update_record('assignfeedback_witsoj_mkr', $r);
-	return $r;
+        $plugin = self::get_plugin($submission);
+        if ($plugin == null) {
+            error_log("Coding error123");
+            die("Coding Error");
+        }
+        $userid = $submission->userid;
+        // NB return whether there was a submission and marker available for judging. Not whether marking was successful.
+        $plugin->judge($marker, $userid);
+        return true;
+    }
+
+    public function judge($marker, $userid, $pathnamehash = null)
+    {
+        // Data To Send (including testcase metadata, student source, language, limits, pe_ratio, and callback
+        $data = $this->get_marker_data($userid, $pathnamehash);
+        if ($data == null) {
+            $this->set_witsoj_status($userid, ASSIGNFEEDBACK_WITSOJ_STATUS_ABORTED, 'Unable to prepare data. Aborted.');
+            return false;
+        }
+        // Send data to the marker
+        $check = $this->post_to_marker($marker, $data);
+        error_log("CHECK: " . print_r($check, true));
+        error_log("CHECK: " . $check["status"]);
+        if ($check["status"] == "0") {
+            $this->set_witsoj_status($userid, ASSIGNFEEDBACK_WITSOJ_STATUS_JUDGING, 'Delivered to marker.');
+            self::marker_busy($marker);
+            return true;
+        } else {
+            $this->set_witsoj_status($userid, ASSIGNFEEDBACK_WITSOJ_STATUS_PENDING, 'Failed to deliver to marker. Retrying.');
+            return false;
+        }
+    }
+    public static function fetch_pending_submission()
+    {
+        global $DB;
+        $success = false;
+        while (!$success) {
+            $sql = "SELECT * FROM {assignfeedback_witsoj} s ".
+            " WHERE status = 0 ".
+            " ORDER BY timemodified ASC ".
+            " LIMIT 1";
+            $rec = $DB->get_records_sql($sql);
+            if (count($rec) == 0) {
+                return false;
+            }
+            $r = reset($rec);
+            $plugin = self::get_plugin($r);
+            $success = $plugin->set_witsoj_status($r->userid, ASSIGNFEEDBACK_WITSOJ_STATUS_JUDGING, "Submitting to marker."); // TODO: Status Submitting
+            if (!$success) {
+                error_log("Selected submission scooped by another thread. Searching for another.");
+            }
+        }
+        return $r;
+    }
+    public static function marker_free_by_id($markerid)
+    {
+        // Get marker with lastseen > 2minutes (assume its free)
+        global $DB;
+        $now = new DateTime("now", core_date::get_user_timezone_object());
+        $nowts = $now->getTimestamp();
+        $sql = "SELECT * FROM {assignfeedback_witsoj_mkr} m ".
+        " WHERE id = :markerid ". // If the marker is free, or hasn't delivered a mark in the last 2 minutes
+        " LIMIT 1";
+        $rec = $DB->get_records_sql($sql, array("markerid"=>$markerid));
+        if (count($rec) == 0) {
+            return false;
+        }
+        $r = reset($rec);
+        $r->lastseen = $nowts;
+        $r->status = ASSIGNFEEDBACK_WITSOJ_MARKER_FREE;
+        $DB->update_record('assignfeedback_witsoj_mkr', $r);
+        return $r;
+    }
+    public static function marker_free($marker, $seen=true)
+    {
+        global $DB;
+        $now = new DateTime("now", core_date::get_user_timezone_object());
+        if ($seen) {
+            $nowts = $now->getTimestamp();
+            $marker->lastseen = $nowts;
+        }
+        $marker->status = ASSIGNFEEDBACK_WITSOJ_MARKER_FREE;
+        $DB->update_record('assignfeedback_witsoj_mkr', $marker);
+        return $marker;
+    }
+    public static function marker_busy($marker)
+    {
+        // Get marker with lastseen > 2minutes (assume its free)
+        global $DB;
+        $now = new DateTime("now", core_date::get_user_timezone_object());
+        $nowts = $now->getTimestamp();
+        $marker->lastseen = $nowts;
+        $marker->status = ASSIGNFEEDBACK_WITSOJ_MARKER_BUSY;
+        $DB->update_record('assignfeedback_witsoj_mkr', $marker);
+        return $marker;
+    }
+    public static function marker_book($markerid = null)
+    {
+        // Get marker with lastseen > 2minutes (assume its free)
+        global $DB;
+        $now = new DateTime("now", core_date::get_user_timezone_object());
+        $nowts = $now->getTimestamp();
+        if ($markerid == null) {
+            $sql = "SELECT * FROM {assignfeedback_witsoj_mkr} m ".
+            " WHERE status = 0 OR :current-lastseen >  ".ASSIGNFEEDBACK_WITSOJ_MARKERTIMEOUT. // If the marker is free, or hasn't delivered a mark in the last 2 minutes
+            " LIMIT 1";
+            $rec = $DB->get_records_sql($sql, array("current"=>$nowts));
+        } else {
+            $sql = "SELECT * FROM {assignfeedback_witsoj_mkr} m ".
+            " WHERE id = :current";
+            $rec = $DB->get_records_sql($sql, array("current"=>$markerid));
+        }
+
+        if (count($rec) == 0) {
+            return false;
+        }
+        $r = reset($rec);
+        $r->lastseen = $nowts;
+        $r->status = ASSIGNFEEDBACK_WITSOJ_MARKER_BOOKED;
+        $DB->update_record('assignfeedback_witsoj_mkr', $r);
+        return $r;
     }
 
 
@@ -785,166 +839,225 @@ class assign_feedback_witsoj extends assign_feedback_plugin {
      * @param MoodleQuickForm $mform The form to add elements to
      * @return void
      */
-    public function get_settings(MoodleQuickForm $mform) {
-	$languages = $this->get_languages();
+    public function get_settings(MoodleQuickForm $mform)
+    {
+        $languages = $this->get_languages();
         $default_lang = array_search($this->get_config('language'), $languages);
 
-	$cpu_limits = $this->get_cpu_limits();
+        $cpu_limits = $this->get_cpu_limits();
         $default_cpu_limit = array_search($this->get_config('cpu_limit'), $cpu_limits);
 
-	$mem_limits = $this->get_mem_limits();
+        $mem_limits = $this->get_mem_limits();
         $default_mem_limit = array_search($this->get_config('mem_limit'), $mem_limits);
 
-	$pe_ratios = $this->get_presentation_error_ratios();
+        $pe_ratios = $this->get_presentation_error_ratios();
         $default_pe_ratio = array_search($this->get_config('pe_ratio'), $pe_ratios);
 
-	// Languages
+        // Languages
         $mform->addElement('select', 'assignfeedback_witsoj_language', get_string('language', 'assignfeedback_witsoj'), $languages, null);
         $mform->addHelpButton('assignfeedback_witsoj_language', 'language', 'assignfeedback_witsoj');
-	$mform->setDefault('assignfeedback_witsoj_language', $default_lang);
-	
-	// Limits
-	$mform->addElement('select', 'assignfeedback_witsoj_limit_cpu', get_string('cpu_limit', 'assignfeedback_witsoj'), $cpu_limits, null);
-        $mform->addHelpButton('assignfeedback_witsoj_limit_cpu', 'cpu_limit', 'assignfeedback_witsoj');
-	$mform->setDefault('assignfeedback_witsoj_limit_cpu', $default_cpu_limit);
+        $mform->setDefault('assignfeedback_witsoj_language', $default_lang);
 
-	$mform->addElement('select', 'assignfeedback_witsoj_limit_mem', get_string('mem_limit', 'assignfeedback_witsoj'), $mem_limits, null);
+        // Limits
+        $mform->addElement('select', 'assignfeedback_witsoj_limit_cpu', get_string('cpu_limit', 'assignfeedback_witsoj'), $cpu_limits, null);
+        $mform->addHelpButton('assignfeedback_witsoj_limit_cpu', 'cpu_limit', 'assignfeedback_witsoj');
+        $mform->setDefault('assignfeedback_witsoj_limit_cpu', $default_cpu_limit);
+
+        $mform->addElement('select', 'assignfeedback_witsoj_limit_mem', get_string('mem_limit', 'assignfeedback_witsoj'), $mem_limits, null);
         $mform->addHelpButton('assignfeedback_witsoj_limit_mem', 'mem_limit', 'assignfeedback_witsoj');
-	$mform->setDefault('assignfeedback_witsoj_limit_mem', $default_mem_limit);
-	// Presentation Error Ratio
-	$mform->addElement('select', 'assignfeedback_witsoj_presentation_error_ratio', get_string('presentation_error', 'assignfeedback_witsoj'), $pe_ratios, null);
+        $mform->setDefault('assignfeedback_witsoj_limit_mem', $default_mem_limit);
+        // Presentation Error Ratio
+        $mform->addElement('select', 'assignfeedback_witsoj_presentation_error_ratio', get_string('presentation_error', 'assignfeedback_witsoj'), $pe_ratios, null);
         $mform->addHelpButton('assignfeedback_witsoj_presentation_error_ratio', 'presentation_error', 'assignfeedback_witsoj');
-	$mform->setDefault('assignfeedback_witsoj_presentation_error_ratio', $default_pe_ratio);
-	// Upload Test Cases ZIP with YML
-	$max_bytes = get_config('assignfeedback_witsoj', 'maxbytes');
-	$mform->addElement('filemanager', 'assignfeedback_witsoj_testcases', get_string('test_cases', 'assignfeedback_witsoj'), null,
+        $mform->setDefault('assignfeedback_witsoj_presentation_error_ratio', $default_pe_ratio);
+        // Upload Test Cases ZIP with YML
+        $max_bytes = get_config('assignfeedback_witsoj', 'maxbytes');
+        $mform->addElement(
+        'filemanager',
+        'assignfeedback_witsoj_testcases',
+        get_string('test_cases', 'assignfeedback_witsoj'),
+        null,
                     array('subdirs' => 0, 'maxbytes' => $max_bytes, 'areamaxbytes' => $max_bytes*10000, 'maxfiles' => 50,
-                          'accepted_types' => array('.zip'), 'return_types'=> FILE_INTERNAL | FILE_EXTERNAL));
+                          'accepted_types' => array('.zip'), 'return_types'=> FILE_INTERNAL | FILE_EXTERNAL)
+    );
         $mform->addHelpButton('assignfeedback_witsoj_testcases', 'test_cases', 'assignfeedback_witsoj');
 
-	$draftitemid = file_get_submitted_draft_itemid('assignfeedback_witsoj_testcases');
-	file_prepare_draft_area($draftitemid, $this->assignment->get_context()->id, 'assignfeedeback_witsoj', 'attachment', null,
-		                array('subdirs' => 0, 'maxbytes' => $max_bytes, 'maxfiles' => 1));
-	
+        $draftitemid = file_get_submitted_draft_itemid('assignfeedback_witsoj_testcases');
+        file_prepare_draft_area(
+        $draftitemid,
+        $this->assignment->get_context()->id,
+        'assignfeedeback_witsoj',
+        'attachment',
+        null,
+                        array('subdirs' => 0, 'maxbytes' => $max_bytes, 'maxfiles' => 1)
+    );
+
         // Disable comment online if comment feedback plugin is disabled.
         $mform->disabledIf('assignfeedback_witsoj_language', 'assignfeedback_witsoj_enabled', 'notchecked');
-   }
+    }
 
-    public function data_preprocessing(&$defaultvalues) {
+    public function data_preprocessing(&$defaultvalues)
+    {
         $draftitemid = file_get_submitted_draft_itemid('assignfeedback_witsoj_testcases');
-        file_prepare_draft_area($draftitemid, $this->assignment->get_context()->id, 'assignfeedback_witsoj', ASSIGNFEEDBACK_WITSOJ_TESTCASE_FILEAREA,
-                                0, array('subdirs' => 0));
+        file_prepare_draft_area(
+            $draftitemid,
+            $this->assignment->get_context()->id,
+            'assignfeedback_witsoj',
+            ASSIGNFEEDBACK_WITSOJ_TESTCASE_FILEAREA,
+                                0,
+            array('subdirs' => 0)
+        );
         $defaultvalues['assignfeedback_witsoj_testcases'] = $draftitemid;
         return;
     }
 
-    public static function format_oj_feedback($oj_testcases, $oj_feedback){
-	$tc_result = json_decode($oj_testcases);
-	error_log(print_r($tc_result[0],true));
-	$out = "<table class='addtoall expandall' border='0' cellpadding=0 cellspacing=0>";
-	if(count($tc_result) === 1){
-		if($tc_result[0]->result == ASSIGNFEEDBACK_WITSOJ_STATUS_COMPILEERROR ){
-			$feedback = $tc_result[0]->oj_feedback;
-		        $out .= "<tr style='color:#CCCC00'><td>&#10007;</td><td>Compilation Error</td><td>$feedback</td></tr>";
-		}elseif($tc_result[0]->result == ASSIGNFEEDBACK_WITSOJ_STATUS_MARKERERROR ){
-			$feedback = $tc_result[0]->oj_feedback;
-		        $out .= "<tr style='color:#CC00CC'><td>&#10007;</td><td>Marker Error</td><td>$feedback</td></tr>";
-		}
-	}else{
-		for($i = 0; $i < count($tc_result); $i++){
-		    $result = $tc_result[$i]->result;
-		    $feedback = $tc_result[$i]->oj_feedback;
-		    $grade = $tc_result[$i]->grade;
-		    $max = $tc_result[$i]->max_grade;
-		    #$icon_code = "<a href='feedback/witsoj/details.php?id=123&tc=$i'>!</a>" 
-		    if($result == ASSIGNFEEDBACK_WITSOJ_STATUS_PRESENTATIONERROR){
-		        $out .= "<tr style='color:#880'><td>&#10007;</td><td>TestCase $i</td><td>Presentation Error ($grade/$max)</td><td>$feedback</td></tr>";
-		    }else if($result == ASSIGNFEEDBACK_WITSOJ_STATUS_INCORRECT){
-			$out .= "<tr style='color:#A00'><td>&#10007;</td><td>TestCase $i</td><td>Failed ($grade/$max)</td><td>$feedback</td><td>ICON</td></tr>";
-		    }else if($result == ASSIGNFEEDBACK_WITSOJ_STATUS_ACCEPTED){
-			$out .= "<tr style='color:#070'><td>&#10004;</td><td>TestCase $i</td><td>Passed ($grade/$max)</td><td>$feedback</td></tr>";
-		    }else{
-			error_log("WITSOJ: What result is this?" . print_r($tc_result[$i]));
-			$out .= "<tr style='color:#AA0'><td>&#10004;</td><td>TestCase $i</td><td>???? ($grade/$max)</td><td>$feedback</td></tr>";
-		    }
-		}
-	}
-	$out .= "</table>";
-	return $out;
-    }
-    
-    public function returned_grade($markerid, $userid, $newgrade, $status, $oj_testcases, $oj_feedback){
-	global $DB;
-	error_log("GRADE: " . $newgrade);
-	$grade = $this->assignment->get_user_grade($userid, true);
-	$grade->grade = $newgrade;
-	//$grade->grader = 3;
-	$this->assignment->update_grade($grade, false);
+    public static function format_oj_feedback($oj_testcases, $oj_feedback, $getdetails_url)
+    {
+        $tc_result = json_decode($oj_testcases);
+        error_log(print_r($tc_result[0], true));
+        $out = "<table class='addtoall expandall' border='0' cellpadding=0 cellspacing=0>";
 
-	$feedback = $this->get_feedback_witsoj($grade->id);
+        if (count($tc_result) === 1) {
+            $icon_code = "<a href='$getdetails_url' target='_blank' >&#9432</a>" ;
+            if ($tc_result[0]->result == ASSIGNFEEDBACK_WITSOJ_STATUS_COMPILEERROR) {
+                $feedback = $tc_result[0]->oj_feedback;
+                $out .= "<tr style='color:#CCCC00'><td>&#10007;</td><td>Compilation Error</td><td>$feedback</td><td>$icon_code</td></tr>";
+            } elseif ($tc_result[0]->result == ASSIGNFEEDBACK_WITSOJ_STATUS_MARKERERROR) {
+                $feedback = $tc_result[0]->oj_feedback;
+                $out .= "<tr style='color:#CC00CC'><td>&#10007;</td><td>Marker Error</td><td>$feedback</td><td>$icon_code</td></tr>";
+            }
+        } else {
+            for ($i = 0; $i < count($tc_result); $i++) {
+                $result = $tc_result[$i]->result;
+                $feedback = $tc_result[$i]->oj_feedback;
+                $grade = $tc_result[$i]->grade;
+                $max = $tc_result[$i]->max_grade;
+                //$gradeid = $grade->id ;
+                //$details = $this->get_details_url();
+                $new_url = $getdetails_url."&testcase=$i" ;
+                $icon_code = "<a href='$new_url' target='_blank' >&#9432</a>" ;
+                // $icon_code = "<a href='feedback/witsoj/details.php?id=123&tc=$i' target='_blank'>!</a>" ;
+
+                //$icon_code = "<a href='feedback/witsoj/details.php?id=123&tc=$i'>!</a>" ;
+                if ($result == ASSIGNFEEDBACK_WITSOJ_STATUS_PRESENTATIONERROR) {
+                    $out .= "<tr style='color:#880'><td>&#10007;</td><td>TestCase $i</td><td>Presentation Error ($grade/$max)</td><td>$feedback</td><td>$icon_code</td></tr>";
+                } elseif ($result == ASSIGNFEEDBACK_WITSOJ_STATUS_INCORRECT) {
+                    $out .= "<tr style='color:#A00'><td>&#10007;</td><td>TestCase $i</td><td>Failed ($grade/$max)</td><td>$feedback</td><td>$icon_code</td></tr>";
+                } elseif ($result == ASSIGNFEEDBACK_WITSOJ_STATUS_ACCEPTED) {
+                    $out .= "<tr style='color:#070'><td>&#10004;</td><td>TestCase $i</td><td>Passed ($grade/$max)</td><td>$feedback</td><td>$icon_code</td></tr>";
+                } else {
+                    error_log("WITSOJ: What result is this?" . print_r($tc_result[$i]));
+                    $out .= "<tr style='color:#AA0'><td>&#10004;</td><td>TestCase $i</td><td>???? ($grade/$max)</td><td>$feedback</td><td>$icon_code</td></tr>";
+                }
+            }
+        }
+        $out .= "</table>";
+        return $out;
+    }
+
+    public function returned_grade($markerid, $userid, $newgrade, $status, $oj_testcases, $oj_feedback)
+    {
+        global $DB;
+        error_log("GRADE: " . $newgrade);
+        $grade = $this->assignment->get_user_grade($userid, true);
+        $grade->grade = $newgrade;
+        //$grade->grader = 3;
+        $this->assignment->update_grade($grade, false);
+
+        $feedback = $this->get_feedback_witsoj($grade->id);
+        $getdetails_url = $this->get_details_url($userid) ; // gets the new url when the user clicks the icon
 
         if ($feedback) {
-		$feedback->status = $status;
-		$feedback->commenttext = self::format_oj_feedback($oj_testcases, $oj_feedback);
-		$feedback->ojtests = $oj_testcases;
-		$feedback->ojfeedback = $oj_feedback;
-		$now = new DateTime("now", core_date::get_user_timezone_object());	
-		$feedback->timemodified = $now->getTimestamp();
-                $DB->update_record('assignfeedback_witsoj', $feedback);
-        }else{
-		error_log("Submission doesn't exist in the witsoj table yet we received a mark.");
-	}
-	$newsub = self::fetch_pending_submission();
-	if(!$newsub){
-		error_log("Free by id: " . $markerid);
-		$this->marker_free_by_id($markerid); // Rather check for a new submission to mark
-	}else{
-		// TODO load the assignment/plugin associated with the next submission.
-		// Send to marker
-		error_log( print_r( $newsub, true ) );
-		$marker = self::marker_book($markerid);	
-		error_log("Marker: " . $marker->id);
-		self::judge_next_submission($marker, $newsub);
-	}
+            $feedback->status = $status;
+            $feedback->commenttext = self::format_oj_feedback($oj_testcases, $oj_feedback, $getdetails_url);
+            $feedback->ojtests = $oj_testcases;
+            $feedback->ojfeedback = $oj_feedback;
+            $now = new DateTime("now", core_date::get_user_timezone_object());
+            $feedback->timemodified = $now->getTimestamp();
+            $DB->update_record('assignfeedback_witsoj', $feedback);
+        } else {
+            error_log("Submission doesn't exist in the witsoj table yet we received a mark.");
+        }
+        $newsub = self::fetch_pending_submission();
+        if (!$newsub) {
+            error_log("Free by id: " . $markerid);
+            $this->marker_free_by_id($markerid); // Rather check for a new submission to mark
+        } else {
+            // TODO load the assignment/plugin associated with the next submission.
+            // Send to marker
+            error_log(print_r($newsub, true));
+            $marker = self::marker_book($markerid);
+            error_log("Marker: " . $marker->id);
+            self::judge_next_submission($marker, $newsub);
+        }
     }
 
-    public function view_page($pluginaction){
-	if($pluginaction == "prod"){
-		error_log("Prod");
-		self::prod();
-	}elseif($pluginaction == "rejudge"){
-		if($this->can_rejudge()){
-			error_log("rejudge");
-			$userid = required_param('userid', PARAM_INT);
-			$this->rejudge($userid);
-			self::prod();
-			print("Successfully queued 1 submissions.");
-		}else{
-			print("Cannot Rejudge: Missing Permission");
-		}
-	}elseif($pluginaction == "rejudgeall"){
-		if($this->can_rejudge()){
-			error_log("rejudgeall");
-			$n = $this->rejudge_all();
-			self::prod();
-			print("Successfully queued $n submissions.");
-		}else{
-			print("Cannot Rejudge: Missing Permission");
-		}
-	}elseif($pluginaction == "rejudgeorphans"){
-		if($this->can_rejudge()){
-			error_log("rejudgeorphans");
-			$n = $this->rejudge_orphans();
-			self::prod();
-			print("Successfully queued $n orphans for grading.");
-		}else{
-			print("Cannot Rejudge: Missing Permission");
-		}
-	}elseif($pluginaction == "clean"){
-		error_log("clean");
-		$n = $this->clean();
-		print("Successfully cleaned $n broken submissions.");
-	}
+    public function view_page($pluginaction)
+    {
+        if ($pluginaction == "prod") {
+            error_log("Prod");
+            self::prod();
+        } elseif ($pluginaction == "rejudge") {
+            if ($this->can_rejudge()) {
+                error_log("rejudge");
+                $userid = required_param('userid', PARAM_INT);
+                $this->rejudge($userid);
+                self::prod();
+                print("Successfully queued 1 submissions.");
+            } else {
+                print("Cannot Rejudge: Missing Permission");
+            }
+        } elseif ($pluginaction == "rejudgeall") {
+            if ($this->can_rejudge()) {
+                error_log("rejudgeall");
+                $n = $this->rejudge_all();
+                self::prod();
+                print("Successfully queued $n submissions.");
+            } else {
+                print("Cannot Rejudge: Missing Permission");
+            }
+        } elseif ($pluginaction == "rejudgeorphans") {
+            if ($this->can_rejudge()) {
+                error_log("rejudgeorphans");
+                $n = $this->rejudge_orphans();
+                self::prod();
+                print("Successfully queued $n orphans for grading.");
+            } else {
+                print("Cannot Rejudge: Missing Permission");
+            }
+        } elseif ($pluginaction == "clean") {
+            error_log("clean");
+            $n = $this->clean();
+            print("Successfully cleaned $n broken submissions.");
+        } elseif ($pluginaction == "viewdetails") {
+            error_log("viewdetails");
+            global $DB;
+            if ($this->can_rejudge()) {
+                // lecturer
+                print("You do not have access to this feature yet");
+            } else {
+                // student
+                $witsoj_assign_userid = required_param('userid', PARAM_INT);
+                $witsoj_assignment_id = required_param('id', PARAM_INT);
+                // $this->assignment->get_context()->instanceid
+                // status = 2 means that there was a compile error
+                $sql = "SELECT ojtests FROM mdl_assignfeedback_witsoj WHERE status = 2 AND
+      (assignmentcontextid = '$witsoj_assignment_id' AND userid = '$witsoj_assign_userid')";
+                $rec = $DB->get_records_sql($sql);
+                // echo $rec[0];
+                if ($rec) {
+                    foreach ($rec as $ojtests => $v) {
+                        // var_dump($jsond);
+                        $sub = substr($ojtests, 1, strlen($ojtests) - 2);
+                        $jsond = json_decode($sub);
+                        // print_r($jsond);
+                        echo $jsond->stderr;
+                    }
+                } else {
+                    echo "Nothing to display";
+                }
+            }
+        }
     }
 
     /**
@@ -955,7 +1068,8 @@ class assign_feedback_witsoj extends assign_feedback_plugin {
      * @param stdClass $data - Form data to be filled with the converted submission text and format.
      * @return boolean - True if feedback text was set.
      */
-    protected function convert_submission_text_to_feedback($submission, $data) {
+    protected function convert_submission_text_to_feedback($submission, $data)
+    {
         $format = false;
         $text = '';
 
@@ -995,7 +1109,8 @@ class assign_feedback_witsoj extends assign_feedback_plugin {
      * @param stdClass $data
      * @return bool true if elements were added to the form
      */
-    public function get_form_elements_for_user($grade, MoodleQuickForm $mform, stdClass $data, $userid) {
+    public function get_form_elements_for_user($grade, MoodleQuickForm $mform, stdClass $data, $userid)
+    {
         $commentinlinenabled = $this->get_config('commentinline');
         $submission = $this->assignment->get_user_submission($userid, false);
         $feedbackcomments = false;
@@ -1013,9 +1128,9 @@ class assign_feedback_witsoj extends assign_feedback_plugin {
                 $this->convert_submission_text_to_feedback($submission, $data);
             }
         }
-	error_log("Test");
+        error_log("Test");
         $mform->addElement('editor', 'assignfeedbackcomments_editor', $this->get_name(), null, null);
-	$mform->addElement('static', 'assignfeedbackwitsoj_rejudge', $this->get_name(), '#', null);
+        $mform->addElement('static', 'assignfeedbackwitsoj_rejudge', $this->get_name(), '#', null);
 
         return true;
     }
@@ -1027,7 +1142,8 @@ class assign_feedback_witsoj extends assign_feedback_plugin {
      * @param stdClass $data
      * @return bool
      */
-    public function save(stdClass $grade, stdClass $data) {
+    public function save(stdClass $grade, stdClass $data)
+    {
         global $DB;
         $feedbackcomment = $this->get_feedback_witsoj($grade->id);
         if ($feedbackcomment) {
@@ -1051,36 +1167,40 @@ class assign_feedback_witsoj extends assign_feedback_plugin {
      * @param bool $showviewlink Set to true to show a link to view the full feedback
      * @return string
      */
-    public function view_summary(stdClass $grade, & $showviewlink) {
-	error_log("OJ: VIEW SUMMARY");
+    public function view_summary(stdClass $grade, & $showviewlink)
+    {
+        error_log("OJ: VIEW SUMMARY");
         $feedbackcomments = $this->get_feedback_witsoj($grade->id);
-	$buttons = "";
-	if($this->can_rejudge()){
+        $buttons = "";
+        if ($this->can_rejudge()) {
             $rejudge_cur = $this->get_rejudge_url($grade->userid);
             $rejudge_all = $this->get_rejudge_all_url();
-	    $prod = $this->get_prod_url();
-	    //$buttons .= "<form method='post' action='#'>";
-	    $buttons .=  "<a class='btn btn-secondary' href='$rejudge_cur'style='margin-bottom:5px;margin-right:5px;'>Rejudge</a>";
-	    //$buttons .=  "<a class='btn btn-secondary' href='$rejudge_all'style='margin-bottom:5px;'>Rejudge All</a><br/>";
+            $prod = $this->get_prod_url();
+            //$buttons .= "<form method='post' action='#'>";
+            $buttons .=  "<a class='btn btn-secondary' href='$rejudge_cur'style='margin-bottom:5px;margin-right:5px;'>Rejudge</a>";
+            //$buttons .=  "<a class='btn btn-secondary' href='$rejudge_all'style='margin-bottom:5px;'>Rejudge All</a><br/>";
             //$buttons .=  "<a class='btn btn-secondary' href='$prod'style='margin-bottom:5px;'>Prod</a><br/>";
-	    //$buttons .= "</form><br/>";
-	}
-	global $PAGE;
-	global $CFG ;
+        //$buttons .= "</form><br/>";
+        }
+        global $PAGE;
+        global $CFG ;
         if ($feedbackcomments) {
-	    $temp_id = $grade->id ;
-	    if($feedbackcomments->status == ASSIGNFEEDBACK_WITSOJ_STATUS_PENDING or $feedbackcomments->status == ASSIGNFEEDBACK_WITSOJ_STATUS_JUDGING){
-	    	$PAGE->requires->js( new moodle_url($CFG->wwwroot . "/mod/assign/feedback/witsoj/loadAjax.php?gradeid=".$temp_id) );
-	    }
-            $text = format_text($feedbackcomments->commenttext,
+            $temp_id = $grade->id ;
+            if ($feedbackcomments->status == ASSIGNFEEDBACK_WITSOJ_STATUS_PENDING or $feedbackcomments->status == ASSIGNFEEDBACK_WITSOJ_STATUS_JUDGING) {
+                $PAGE->requires->js(new moodle_url($CFG->wwwroot . "/mod/assign/feedback/witsoj/loadAjax.php?gradeid=".$temp_id));
+            }
+            $text = format_text(
+                $feedbackcomments->commenttext,
                                 $feedbackcomments->commentformat,
-                                array('context' => $this->assignment->get_context()));
+                                array('context' => $this->assignment->get_context())
+            );
             $short = shorten_text($text, 140);
 
             // Show the view all link if the text has been shortened.
+            #$showviewlink = $short != $text;
             $showviewlink = $short != $text;
 
-            return $buttons."<div id='tmp'>".$short."</div>";
+            return $buttons."<div id='tmp'>".$text."</div>";
         }
         return $buttons."<div id='tmp'></div>";
     }
@@ -1091,13 +1211,16 @@ class assign_feedback_witsoj extends assign_feedback_plugin {
      * @param stdClass $grade
      * @return string
      */
-    public function view(stdClass $grade) {
-	error_log("OJ: VIEW");
+    public function view(stdClass $grade)
+    {
+        error_log("OJ: VIEW");
         $feedbackcomments = $this->get_feedback_witsoj($grade->id);
         if ($feedbackcomments) {
-            return format_text($feedbackcomments->commenttext,
+            return format_text(
+                $feedbackcomments->commenttext,
                                $feedbackcomments->commentformat,
-                               array('context' => $this->assignment->get_context()));
+                               array('context' => $this->assignment->get_context())
+            );
         }
         return '';
     }
@@ -1110,8 +1233,8 @@ class assign_feedback_witsoj extends assign_feedback_plugin {
      * @param int $version old assignment version
      * @return bool True if upgrade is possible
      */
-    public function can_upgrade($type, $version) {
-
+    public function can_upgrade($type, $version)
+    {
         if (($type == 'upload' || $type == 'uploadsingle' ||
              $type == 'online' || $type == 'offline') && $version >= 2011112900) {
             return true;
@@ -1127,7 +1250,8 @@ class assign_feedback_witsoj extends assign_feedback_plugin {
      * @param string $log - can be appended to by the upgrade
      * @return bool was it a success? (false will trigger a rollback)
      */
-    public function upgrade_settings(context $oldcontext, stdClass $oldassignment, & $log) {
+    public function upgrade_settings(context $oldcontext, stdClass $oldassignment, & $log)
+    {
         if ($oldassignment->assignmenttype == 'online') {
             $this->set_config('commentinline', $oldassignment->var1);
             return true;
@@ -1145,11 +1269,13 @@ class assign_feedback_witsoj extends assign_feedback_plugin {
      * @param string $log Record upgrade messages in the log
      * @return bool true or false - false will trigger a rollback
      */
-    public function upgrade(context $oldcontext,
+    public function upgrade(
+        context $oldcontext,
                             stdClass $oldassignment,
                             stdClass $oldsubmission,
                             stdClass $grade,
-                            & $log) {
+                            & $log
+    ) {
         global $DB;
 
         $feedbackcomments = new stdClass();
@@ -1176,7 +1302,8 @@ class assign_feedback_witsoj extends assign_feedback_plugin {
      * @param stdClass $grade The grade
      * @return int
      */
-    public function format_for_gradebook(stdClass $grade) {
+    public function format_for_gradebook(stdClass $grade)
+    {
         $feedbackcomments = $this->get_feedback_witsoj($grade->id);
         if ($feedbackcomments) {
             return $feedbackcomments->commentformat;
@@ -1194,7 +1321,8 @@ class assign_feedback_witsoj extends assign_feedback_plugin {
      * @param stdClass $grade The grade
      * @return string
      */
-    public function text_for_gradebook(stdClass $grade) {
+    public function text_for_gradebook(stdClass $grade)
+    {
         $feedbackcomments = $this->get_feedback_witsoj($grade->id);
         if ($feedbackcomments) {
             return $feedbackcomments->commenttext;
@@ -1207,11 +1335,14 @@ class assign_feedback_witsoj extends assign_feedback_plugin {
      *
      * @return bool
      */
-    public function delete_instance() {
+    public function delete_instance()
+    {
         global $DB;
         // Will throw exception on failure.
-        $DB->delete_records('assignfeedback_witsoj',
-                            array('assignment'=>$this->assignment->get_instance()->id));
+        $DB->delete_records(
+            'assignfeedback_witsoj',
+                            array('assignment'=>$this->assignment->get_instance()->id)
+        );
         return true;
     }
 
@@ -1221,7 +1352,8 @@ class assign_feedback_witsoj extends assign_feedback_plugin {
      * @param stdClass $grade
      * @return bool
      */
-    public function is_empty(stdClass $grade) {
+    public function is_empty(stdClass $grade)
+    {
         return $this->view($grade) == '';
     }
 
@@ -1230,7 +1362,8 @@ class assign_feedback_witsoj extends assign_feedback_plugin {
      *
      * @return external_description|null
      */
-    public function get_external_parameters() {
+    public function get_external_parameters()
+    {
         $editorparams = array('text' => new external_value(PARAM_RAW, 'The text for this feedback.'),
                               'format' => new external_value(PARAM_INT, 'The format for this feedback'));
         $editorstructure = new external_single_structure($editorparams, 'Editor structure', VALUE_OPTIONAL);
@@ -1243,13 +1376,8 @@ class assign_feedback_witsoj extends assign_feedback_plugin {
      * @return array the list of settings
      * @since Moodle 3.2
      */
-    public function get_config_for_external() {
+    public function get_config_for_external()
+    {
         return (array) $this->get_config();
     }
 }
-
-
-
-
-
-
