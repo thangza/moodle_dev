@@ -2,6 +2,8 @@
 use PHPUnit\Framework\TestCase;
 use PHPUnit\DbUnit\TestCaseTrait;
 
+global $CFG;
+
 require_once($CFG->dirroot . '../mod/assign/locallib.php');
 
 
