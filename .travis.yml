@@ -1,10 +1,24 @@
 language: php
 php:
   - 7.1.1
+services:
+  - mysql
+addons:
+  apt:
+    sources:
+      - mysql-5.7-trusty
+    packages:
+      - mysql-server
+dist: trusty
+sudo: required
 before_install:
   - composer self-update --rollback
+  - mysql -e 'CREATE DATABASE moodle;'
+  - mysql -u root --password='' moodle < dump_sprint2.sql
+  - mysql -e 'USE moodle; SHOW TABLES; SELECT COUNT(id) FROM mdl_enrol; SELECT * FROM mdl_enrol;'
 install:
   - composer require satooshi/php-coveralls:~0.6@stable
+  - composer require --dev phpunit/dbunit
   - composer install
 before_script:
   - mkdir -p ./test_reports/logs
