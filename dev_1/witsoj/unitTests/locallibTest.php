@@ -2,6 +2,8 @@
 use PHPUnit\Framework\TestCase;
 use PHPUnit\DbUnit\TestCaseTrait;
 
+require_once('moodle_dev/dev_1/witsoj/locallib.php');
+
 class locallibTest extends TestCase{
 
   public function testTrueisTrue(){
