@@ -2,11 +2,6 @@
 use PHPUnit\Framework\TestCase;
 use PHPUnit\DbUnit\TestCaseTrait;
 
-require_once '../locallib.php';
-
-
-#$db = new PDO($connection_string, $mysql_user, $mysql_password);
-
 class locallibTest extends TestCase{
 
   public function testTrueisTrue(){
