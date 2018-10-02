@@ -3,8 +3,8 @@
 >
 
          <testsuites>
-           <testsuite name="App tests">
-             <directory suffix=".php">dev_1/witsoj/tests</directory>
+           <testsuite name="Unit tests">
+             <directory suffix=".php">dev_1/witsoj/unitTests</directory>
            </testsuite>
          </testsuites>
 
