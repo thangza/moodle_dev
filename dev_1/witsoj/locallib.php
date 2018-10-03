@@ -22,7 +22,7 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
+//defined('MOODLE_INTERNAL') || die();
 define('ASSIGNFEEDBACK_WITSOJ_TESTCASE_FILEAREA', 'oj_testcases');
 
 define('ASSIGNFEEDBACK_WITSOJ_STATUS_PENDING', 0);
@@ -43,8 +43,8 @@ define('ASSIGNFEEDBACK_WITSOJ_MARKER_BUSY', 2);
 
 define('ASSIGNFEEDBACK_WITSOJ_MARKERTIMEOUT', 60);
 define('ASSIGNFEEDBACK_WITSOJ_SUBMISSIONTIMEOUT', 10);
-global $CFG;
-#require_once($CFG->libdir . '/pagelib.php');
+//global $CFG;
+//require_once($CFG->libdir . '/pagelib.php');
 
 
 /**
