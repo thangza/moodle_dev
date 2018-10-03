@@ -26,9 +26,9 @@ class locallibTest extends TestCase{
   }*/
 
   public function testHello(){
-    $tester=new assign_feedback_witsoj;
+    $tester=new testh;
     $result=$tester->helloWorld();
-    $this->assertEquals('Hello world',$result,'test hello world');    
+    $this->assertEquals('Hello world',$result,'test hello world');
   }
 
 }
