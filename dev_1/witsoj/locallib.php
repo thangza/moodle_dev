@@ -77,7 +77,7 @@ class assign_feedback_witsoj extends assign_feedback_plugin
     {
       //  global $DB;
       //  return $DB->get_record('assignfeedback_witsoj', array('grade'=>$gradeid));
-      return 'Hello world'
+      return 'Hello world';
     }
 
     public function helloWorld(){
