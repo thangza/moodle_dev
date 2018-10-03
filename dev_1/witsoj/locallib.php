@@ -58,6 +58,11 @@ define('ASSIGNFEEDBACK_WITSOJ_SUBMISSIONTIMEOUT', 10);
 class assign_feedback_witsoj
 {
 
+    $mysql_host = getenv('MYSQL_HOST') ?: 'localhost';
+    $mysql_user = getenv('MYSQL_USER') ?: 'root';
+    $mysql_password = getenv('MYSQL_PASSWORD') ?: '';
+    $connection_string = "mysql:host={$mysql_host};dbname=moodle";
+    $DB = new PDO($connection_string, $mysql_user, $mysql_password);
     /**
      * Get the name of the online comment feedback plugin.
      * @return string
@@ -76,7 +81,7 @@ class assign_feedback_witsoj
      */
     public function get_feedback_witsoj($gradeid)
     {
-        global $DB;
+        //global $DB;
     //    return $DB->get_record('assignfeedback_witsoj', array('grade'=>$gradeid));
         $getter=$DB->prepare("SELECT * FROM mdl_assignfeedback_witsoj WHERE id=$gradeid");
         $getter->execute();
