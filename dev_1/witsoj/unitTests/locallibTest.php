@@ -2,6 +2,7 @@
 use PHPUnit\Framework\TestCase;
 use PHPUnit\DbUnit\TestCaseTrait;
 
+require_once('dev_1/witsoj/locallib.php');
 
 class locallibTest extends TestCase{
 
@@ -26,7 +27,7 @@ class locallibTest extends TestCase{
   }*/
 
   public function testHello(){
-    $tester=new testh;
+    $tester=new assign_feedback_witsoj;
     $result=$tester->helloWorld();
     $this->assertEquals('Hello world',$result,'test hello world');
   }
