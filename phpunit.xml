@@ -1,5 +1,8 @@
 <phpunit bootstrap="vendor/autoload.php"
-         color="true"
+         colors="true"
+         convertErrorsToExceptions="true"
+         convertNoticesToExceptions="true"
+         convertWarningsToExceptions="true"
 >
 
          <testsuites>

@@ -54,7 +54,8 @@ define('ASSIGNFEEDBACK_WITSOJ_SUBMISSIONTIMEOUT', 10);
  * @copyright 2012 NetSpot {@link http://www.netspot.com.au}
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class assign_feedback_witsoj extends assign_feedback_plugin
+//class assign_feedback_witsoj extends assign_feedback_plugin
+class assign_feedback_witsoj
 {
 
     /**
