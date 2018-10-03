@@ -11,7 +11,7 @@ class locallibTest extends TestCase{
     $this->assertTrue($foo);
   }
 
-  /*public function testdbTest(){
+  public function testdbTest(){
     #global $DB;
     $mysql_host = getenv('MYSQL_HOST') ?: 'localhost';
     $mysql_user = getenv('MYSQL_USER') ?: 'root';
@@ -24,7 +24,7 @@ class locallibTest extends TestCase{
     $stmt->execute();
     $expected = $stmt->fetchAll();
     $this->assertEquals($expected,$result,"Yay!");
-  }*/
+  }
 
   public function testHello(){
     $tester=new assign_feedback_witsoj;

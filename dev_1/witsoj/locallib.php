@@ -76,9 +76,14 @@ class assign_feedback_witsoj
      */
     public function get_feedback_witsoj($gradeid)
     {
-      //  global $DB;
-      //  return $DB->get_record('assignfeedback_witsoj', array('grade'=>$gradeid));
-      return 'Hello world';
+        global $DB;
+    //    return $DB->get_record('assignfeedback_witsoj', array('grade'=>$gradeid));
+        $getter=$DB->prepare("SELECT * FROM mdl_assignfeedback_witsoj WHERE id=$gradeid");
+        $getter->execute();
+        $result=$getter->fetchAll();
+        return $result;
+
+    //  return 'Hello world';
     }
 
     public function helloWorld(){
