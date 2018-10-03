@@ -79,6 +79,10 @@ class assign_feedback_witsoj extends assign_feedback_plugin
         return $DB->get_record('assignfeedback_witsoj', array('grade'=>$gradeid));
     }
 
+    public function helloWorld(){
+      return 'Hello world';
+    }
+
     /**
      * Get quickgrading form elements as html.
      *
