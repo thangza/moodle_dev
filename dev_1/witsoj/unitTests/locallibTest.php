@@ -2,7 +2,7 @@
 use PHPUnit\Framework\TestCase;
 use PHPUnit\DbUnit\TestCaseTrait;
 
-require_once('dev_1/witsoj/locallib.php');
+#require_once('dev_1/witsoj/locallib.php');
 
 class locallibTest extends TestCase{
 
