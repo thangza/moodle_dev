@@ -27,7 +27,7 @@ class locallibTest extends TestCase{
     $result=$tester->get_feedback_witsoj(1);
     $stmt = $db->prepare("SELECT * FROM mdl_assignfeedback_witsoj WHERE id=1");
     $stmt->execute();
-    $expected = $stmt->fetchAll();
+    $expected = $stmt->fetchObject();
     $this->assertEquals($expected,$result,"Yay!");
   }
 
@@ -37,7 +37,7 @@ class locallibTest extends TestCase{
     $result=$tester->get_editor_text('comments',1);
     $stmt=$db->prepare("SELECT commenttext FROM mdl_assignfeedback_witsoj WHERE id=1");
     $stmt->execute();
-    $expected = $stmt->fetchAll();
+    $expected = $stmt->fetchObject();
     $this->assertEquals($expected,$result,"Yay!");
   }
 

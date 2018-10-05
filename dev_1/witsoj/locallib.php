@@ -86,7 +86,7 @@ class assign_feedback_witsoj
     //    return $DB->get_record('assignfeedback_witsoj', array('grade'=>$gradeid));
         $getter=$DB->prepare("SELECT * FROM mdl_assignfeedback_witsoj WHERE id=$gradeid");
         $getter->execute();
-        $result=$getter->fetchAll();
+        $result=$getter->fetchObject();
         return $result;
 
     //  return 'Hello world';
@@ -202,7 +202,7 @@ class assign_feedback_witsoj
         if ($name == 'comments') {
             $feedbackcomments = $this->get_feedback_witsoj($gradeid);
             if ($feedbackcomments) {
-                return $feedbackcomments['commenttext']; //->commenttext;
+                return $feedbackcomments->commenttext;
             }
         }
 
