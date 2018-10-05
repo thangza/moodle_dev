@@ -33,7 +33,7 @@ class locallibTest extends TestCase{
 
   public function testGetEditorText(){
     $db=$this->getConnection();
-    $tester=new assign_feedeback_witsoj;
+    $tester=new assign_feedback_witsoj;
     $result=$tester->get_editor_text('comments',1);
     $stmt=$db->prepare("SELECT commenttext FROM mdl_assignfeedback_witsoj WHERE id=1");
     $stmt->execute();
