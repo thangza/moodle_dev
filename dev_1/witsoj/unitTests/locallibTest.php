@@ -22,7 +22,7 @@ class locallibTest extends TestCase{
 
   public function testdbTest(){
     #global $DB;
-    $db=getConnection();
+    $db=$this->getConnection();
     $tester=new assign_feedback_witsoj;
     $result=$tester->get_feedback_witsoj(1);
     $stmt = $db->prepare("SELECT * FROM mdl_assignfeedback_witsoj WHERE id=1");
