@@ -35,9 +35,10 @@ class locallibTest extends TestCase{
     $db=$this->getConnection();
     $tester=new assign_feedback_witsoj;
     $result=$tester->get_editor_text('comments',1);
-    $stmt=$db->prepare("SELECT commenttext FROM mdl_assignfeedback_witsoj WHERE id=1");
+    $stmt=$db->prepare("SELECT * FROM mdl_assignfeedback_witsoj WHERE id=1");
     $stmt->execute();
-    $expected = $stmt->fetchObject();
+    $expected1 = $stmt->fetchObject();
+    $expected=$expected1->commenttext;
     $this->assertEquals($expected,$result,"Yay!");
   }
 
