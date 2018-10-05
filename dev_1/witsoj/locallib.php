@@ -202,7 +202,7 @@ class assign_feedback_witsoj
         if ($name == 'comments') {
             $feedbackcomments = $this->get_feedback_witsoj($gradeid);
             if ($feedbackcomments) {
-                return $feedbackcomments; //->commenttext;
+                return $feedbackcomments['commenttext']; //->commenttext;
             }
         }
 
