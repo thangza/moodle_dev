@@ -6,6 +6,15 @@ use PHPUnit\DbUnit\TestCaseTrait;
 
 class locallibTest extends TestCase{
 
+  public function getConnection(){
+    $mysql_host = getenv('MYSQL_HOST') ?: 'localhost';
+    $mysql_user = getenv('MYSQL_USER') ?: 'root';
+    $mysql_password = getenv('MYSQL_PASSWORD') ?: '';
+    $connection_string = "mysql:host={$mysql_host};dbname=moodle";
+    $db = new PDO($connection_string, $mysql_user, $mysql_password);
+    return $db;
+  }
+
   public function testTrueisTrue(){
     $foo = true;
     $this->assertTrue($foo);
@@ -13,11 +22,7 @@ class locallibTest extends TestCase{
 
   public function testdbTest(){
     #global $DB;
-    $mysql_host = getenv('MYSQL_HOST') ?: 'localhost';
-    $mysql_user = getenv('MYSQL_USER') ?: 'root';
-    $mysql_password = getenv('MYSQL_PASSWORD') ?: '';
-    $connection_string = "mysql:host={$mysql_host};dbname=moodle";
-    $db = new PDO($connection_string, $mysql_user, $mysql_password);
+    $db=getConnection();
     $tester=new assign_feedback_witsoj;
     $result=$tester->get_feedback_witsoj(1);
     $stmt = $db->prepare("SELECT * FROM mdl_assignfeedback_witsoj WHERE id=1");
