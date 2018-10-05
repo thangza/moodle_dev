@@ -31,6 +31,16 @@ class locallibTest extends TestCase{
     $this->assertEquals($expected,$result,"Yay!");
   }
 
+  public function testGetEditorText(){
+    $db=$this->getConnection();
+    $tester=new assign_feedeback_witsoj;
+    $result=$tester->get_editor_text('comments',1);
+    $stmt=$db->prepare("SELECT commenttext FROM mdl_assignfeedback_witsoj WHERE id=1");
+    $stmt->execute();
+    $expected = $stmt->fetchAll();
+    $this->assertEquals($expected,$result,"Yay!");
+  }
+
   public function testHello(){
     $tester=new assign_feedback_witsoj;
     $result=$tester->helloWorld();
