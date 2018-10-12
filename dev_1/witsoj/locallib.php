@@ -1049,29 +1049,32 @@ class assign_feedback_witsoj
         } elseif ($pluginaction == "viewdetails") {
             error_log("viewdetails");
             global $DB;
+            $witsoj_assign_userid = required_param('userid', PARAM_INT);
+            $witsoj_assignment_id = required_param('id', PARAM_INT);
+
+            $sql = "SELECT ojtests FROM mdl_assignfeedback_witsoj WHERE
+            (assignmentcontextid = '$witsoj_assignment_id' AND userid = '$witsoj_assign_userid')";
+            $rec = $DB->get_records_sql($sql);
+            $myarr = array();
+            foreach ($rec as $ojtests => $v) {
+                //$sub = substr($ojtests, 1, strlen($ojtests) - 2);
+                //$jsond = json_decode($sub);
+                $jsond = json_decode($ojtests, true) ;
+            }
             if ($this->can_rejudge()) {
                 // lecturer
-                print("You do not have access to this feature yet");
+                if ($jsond[0]['result'] != 2) {
+                    $testcase = required_param('testcase', PARAM_INT);
+                    echo "The test case were: Progout = ".$jsond[$testcase]['progout']." and the Correct output = ".$jsond[$testcase]['modelout'];
+                } else {
+                    echo $jsond[0]['stderr'] ;
+                }
             } else {
                 // student
-                $witsoj_assign_userid = required_param('userid', PARAM_INT);
-                $witsoj_assignment_id = required_param('id', PARAM_INT);
-                // $this->assignment->get_context()->instanceid
-                // status = 2 means that there was a compile error
-                $sql = "SELECT ojtests FROM mdl_assignfeedback_witsoj WHERE status = 2 AND
-      (assignmentcontextid = '$witsoj_assignment_id' AND userid = '$witsoj_assign_userid')";
-                $rec = $DB->get_records_sql($sql);
-                // echo $rec[0];
-                if ($rec) {
-                    foreach ($rec as $ojtests => $v) {
-                        // var_dump($jsond);
-                        $sub = substr($ojtests, 1, strlen($ojtests) - 2);
-                        $jsond = json_decode($sub);
-                        // print_r($jsond);
-                        echo $jsond->stderr;
-                    }
+                if ($jsond[0]['result'] == 2) {
+                    echo $jsond[0]['stderr'];
                 } else {
-                    echo "Nothing to display";
+                    echo "Nice try but no solutions to show :) " ;
                 }
             }
         }
