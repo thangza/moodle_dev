@@ -22,6 +22,10 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+ /*
+Edited by the Wronskians, 2018
+ */
+
 //defined('MOODLE_INTERNAL') || die();
 define('ASSIGNFEEDBACK_WITSOJ_TESTCASE_FILEAREA', 'oj_testcases');
 
@@ -1065,7 +1069,7 @@ class assign_feedback_witsoj
                 // lecturer
                 if ($jsond[0]['result'] != 2) {
                     $testcase = required_param('testcase', PARAM_INT);
-                    echo "The test case were: Progout = ".$jsond[$testcase]['progout']." and the Correct output = ".$jsond[$testcase]['modelout'];
+                    echo "Test Case: Progout = ".$jsond[$testcase]['progout']." and the Correct output = ".$jsond[$testcase]['modelout'];
                 } else {
                     echo $jsond[0]['stderr'] ;
                 }
@@ -1074,7 +1078,7 @@ class assign_feedback_witsoj
                 if ($jsond[0]['result'] == 2) {
                     echo $jsond[0]['stderr'];
                 } else {
-                    echo "Nice try but no solutions to show :) " ;
+                    echo "Nothing to display" ;
                 }
             }
         }
