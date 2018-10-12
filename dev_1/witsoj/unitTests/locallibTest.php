@@ -15,10 +15,7 @@ class locallibTest extends TestCase{
     return $db;
   }
 
-  public function testTrueisTrue(){
-    $foo = true;
-    $this->assertTrue($foo);
-  }
+
 
   public function testdbTest(){
     #global $DB;
@@ -28,7 +25,7 @@ class locallibTest extends TestCase{
     $stmt = $db->prepare("SELECT * FROM mdl_assignfeedback_witsoj WHERE id=1");
     $stmt->execute();
     $expected = $stmt->fetchObject();
-    $this->assertEquals($expected,$result,"Yay!");
+    $this->assertEquals($expected,$result,"Correct");
   }
 
   public function testGetEditorText(){
@@ -39,13 +36,18 @@ class locallibTest extends TestCase{
     $stmt->execute();
     $expected1 = $stmt->fetchObject();
     $expected=$expected1->commenttext;
-    $this->assertEquals($expected,$result,"Yay!");
+    $this->assertEquals($expected,$result,"Correct");
   }
 
   public function testHello(){
     $tester=new assign_feedback_witsoj;
     $result=$tester->helloWorld();
-    $this->assertEquals('Hello world',$result,'test hello world');
+    $this->assertEquals('Hello world',$result,'can access locallib');
+  }
+
+  public function testTrueisTrue(){
+    $foo = true;
+    $this->assertTrue($foo);
   }
 
 }
