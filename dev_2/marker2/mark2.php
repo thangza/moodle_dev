@@ -65,7 +65,7 @@ error_log("Closed moodle connection. Starting to mark....");
 /*$feedback = array();
 foreach($tests["yml"]["test_cases"] as $tc){
 	if(isset($tc["feedback"])){
-		$feedback[] = $tc["feedback"];	
+		$feedback[] = $tc["feedback"];
 	}else{
 		$feedback[] = "";
 	}
@@ -79,7 +79,8 @@ $grade = $marker_data["grade"];
 $outputs = $marker_data["outputs"];
 //die();
 error_log("Finished Marking... Sending grade to moodle..." . $grade);
-//sleep(10);//+intval($markerid));
+sleep(10);//+intval($markerid));
+
 return_grade($callback, $markerid, $userid, $grade, $status, json_encode($outputs), $oj_feedback);
 error_log("Grade sent.");
 
