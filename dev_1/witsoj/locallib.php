@@ -545,6 +545,9 @@ class assign_feedback_witsoj
     }
     return false;
     }*/
+    /**
+    * @codeCoverageIgnore
+    **/
     public function set_witsoj_status($userid, $status, $text)
     {
         global $DB;
@@ -603,6 +606,9 @@ class assign_feedback_witsoj
             return $DB->insert_record('assignfeedback_witsoj', $feedback) > 0;
         }
     }
+    /**
+    * @codeCoverageIgnore
+    **/
 
     public function get_marker_data($userid, $pathnamehash = null)
     {
