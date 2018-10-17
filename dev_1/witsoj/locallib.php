@@ -66,7 +66,9 @@ class assign_feedback_witsoj
     /**
      * Get the name of the online comment feedback plugin.
      * @return string
+     * @codeCoverageIgnore
      */
+
     public function get_name()
     {
         return get_string('pluginname', 'assignfeedback_witsoj');
@@ -78,6 +80,7 @@ class assign_feedback_witsoj
      * @param int $gradeid
      * @return stdClass|false The feedback comments for the given grade if it exists.
      *                        False if it doesn't.
+     * @codeCoverageIgnore
      */
     public function get_feedback_witsoj($gradeid)
     {
@@ -95,6 +98,9 @@ class assign_feedback_witsoj
 
     //  return 'Hello world';
     }
+    /**
+    * @codeCoverageIgnore
+    **/
 
     public function helloWorld(){
       return 'Hello world';
@@ -106,6 +112,7 @@ class assign_feedback_witsoj
      * @param int $userid The user id in the table this quickgrading element relates to
      * @param mixed $grade - The grade data - may be null if there are no grades for this user (yet)
      * @return mixed - A html string containing the html form elements required for quickgrading
+     *@codeCoverageIgnore
      */
     public function get_quickgrading_html($userid, $grade)
     {
@@ -133,6 +140,7 @@ class assign_feedback_witsoj
      * @param int $userid The user id in the table this quickgrading element relates to
      * @param stdClass $grade The grade
      * @return boolean - true if the quickgrading form element has been modified
+     * @codeCoverageIgnore
      */
     public function is_quickgrading_modified($userid, $grade)
     {
@@ -155,6 +163,7 @@ class assign_feedback_witsoj
      * @param stdClass $grade The grade object.
      * @param stdClass $data Data from the form submission.
      * @return boolean True if the comment feedback has been modified, else false.
+     * codeCoverageIgnore
      */
     public function is_feedback_modified(stdClass $grade, stdClass $data)
     {
@@ -178,6 +187,7 @@ class assign_feedback_witsoj
      * Override to indicate a plugin supports quickgrading.
      *
      * @return boolean - True if the plugin supports quickgrading
+     * @codeCoverageIgnore
      */
     public function supports_quickgrading()
     {
@@ -188,6 +198,7 @@ class assign_feedback_witsoj
      * Return a list of the text fields that can be imported/exported by this plugin.
      *
      * @return array An array of field names and descriptions. (name=>description, ...)
+     * @codeCoverageIgnore
      */
     public function get_editor_fields()
     {
@@ -200,6 +211,7 @@ class assign_feedback_witsoj
      * @param string $name
      * @param int $gradeid
      * @return string
+     * @codeCoverageIgnore
      */
     public function get_editor_text($name, $gradeid)
     {
@@ -220,6 +232,7 @@ class assign_feedback_witsoj
      * @param string $value
      * @param int $gradeid
      * @return string
+     * @codeCoverageIgnore
      */
     public function set_editor_text($name, $value, $gradeid)
     {
@@ -975,7 +988,7 @@ class assign_feedback_witsoj
         $out .= "</table>";
         return $out;
     }
-
+//Do not add ignore for testing
     public function returned_grade($markerid, $userid, $newgrade, $status, $oj_testcases, $oj_feedback)
     {
         global $DB;
@@ -1012,7 +1025,7 @@ class assign_feedback_witsoj
             self::judge_next_submission($marker, $newsub);
         }
     }
-
+    //Do not add ignore for testing
     public function view_page($pluginaction)
     {
         if ($pluginaction == "prod") {
@@ -1191,6 +1204,7 @@ class assign_feedback_witsoj
      * @param bool $showviewlink Set to true to show a link to view the full feedback
      * @return string
      */
+     //DO not ad ignore for testing
     public function view_summary(stdClass $grade, & $showviewlink)
     {
         error_log("OJ: VIEW SUMMARY");
