@@ -80,8 +80,8 @@ class assign_feedback_witsoj
      * @param int $gradeid
      * @return stdClass|false The feedback comments for the given grade if it exists.
      *                        False if it doesn't.
-     * @codeCoverageIgnore
      */
+     //Do not ignore for testing
     public function get_feedback_witsoj($gradeid)
     {
       $mysql_host = getenv('MYSQL_HOST') ?: 'localhost';
@@ -98,10 +98,6 @@ class assign_feedback_witsoj
 
     //  return 'Hello world';
     }
-    /**
-    * @codeCoverageIgnore
-    **/
-
     public function helloWorld(){
       return 'Hello world';
     }
@@ -314,43 +310,63 @@ class assign_feedback_witsoj
 
         return true;
     }
-
+    /**
+    * @codeCoverageIgnore
+    **/
     public function get_languages()
     {
         return explode(',', get_config('assignfeedback_witsoj', 'languages'));
     }
-
+    /**
+    * @codeCoverageIgnore
+    **/
     public function get_cpu_limits()
     {
         return array("1", "5", "10", "30", "60");
     }
-
+    /**
+    * @codeCoverageIgnore
+    **/
     public function get_mem_limits()
     {
         return array("1MB", "2MB", "4MB", "8MB", "16MB", "32MB", "64MB");
     }
-
+    /**
+    * @codeCoverageIgnore
+    **/
     public function get_presentation_error_ratios()
     {
         return array("1.0", "0.9", "0.8", "0.7", "0.6", "0.5", "0.4", "0.3", "0.2", "0.1", "0.0");
     }
+    /**
+    * @codeCoverageIgnore
+    **/
     public function get_callback_url()
     {
         global $CFG;
         return $CFG->wwwroot . "/mod/assign/feedback/witsoj/insert_grade.php?id=" . $this->assignment->get_context()->instanceid;
     }
+    /**
+    * @codeCoverageIgnore
+    **/
     public function get_rejudge_url($userid)
     {
         global $CFG;
         $id = $this->assignment->get_context()->instanceid;
         return $CFG->wwwroot . "/mod/assign/view.php?id=$id&action=viewpluginpage&pluginsubtype=assignfeedback&plugin=witsoj&pluginaction=rejudge&userid=$userid";
     }
+    /**
+    * @codeCoverageIgnore
+    **/
     public function get_rejudge_all_url()
     {
         global $CFG;
         $id = $this->assignment->get_context()->instanceid;
         return $CFG->wwwroot . "/mod/assign/view.php?id=$id&action=viewpluginpage&pluginsubtype=assignfeedback&plugin=witsoj&pluginaction=rejudgeall";
     }
+    /**
+    * @codeCoverageIgnore
+    **/
     public function get_prod_url()
     {
         global $CFG;
