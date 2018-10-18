@@ -108,7 +108,7 @@ class assign_feedback_witsoj
      * @param int $userid The user id in the table this quickgrading element relates to
      * @param mixed $grade - The grade data - may be null if there are no grades for this user (yet)
      * @return mixed - A html string containing the html form elements required for quickgrading
-     *@codeCoverageIgnore
+     * @codeCoverageIgnore
      */
     public function get_quickgrading_html($userid, $grade)
     {
@@ -159,7 +159,8 @@ class assign_feedback_witsoj
      * @param stdClass $grade The grade object.
      * @param stdClass $data Data from the form submission.
      * @return boolean True if the comment feedback has been modified, else false.
-     * codeCoverageIgnore
+     * @
+     codeCoverageIgnore
      */
     public function is_feedback_modified(stdClass $grade, stdClass $data)
     {
@@ -258,6 +259,7 @@ class assign_feedback_witsoj
      * @param int $userid The user id in the table this quickgrading element relates to
      * @param stdClass $grade The grade
      * @return boolean - true if the grade changes were saved correctly
+     * @codeCoverageIgnore
      */
     public function save_quickgrading_changes($userid, $grade)
     {
@@ -285,6 +287,7 @@ class assign_feedback_witsoj
      *
      * @param stdClass $data
      * @return bool
+     * @codeCoverageIgnore
      */
     public function save_settings(stdClass $data)
     {
@@ -373,6 +376,9 @@ class assign_feedback_witsoj
         $id = $this->assignment->get_context()->instanceid;
         return $CFG->wwwroot . "/mod/assign/view.php?id=$id&action=viewpluginpage&pluginsubtype=assignfeedback&plugin=witsoj&pluginaction=prod";
     }
+    /**
+    * @codeCoverageIgnore
+    **/
     public function can_rejudge()
     {
         if (has_capability("mod/assign:managegrades", $this->assignment->get_context())) {
@@ -381,12 +387,18 @@ class assign_feedback_witsoj
             return false;
         }
     }
+    /**
+    * @codeCoverageIgnore
+    **/
     public function get_details_url($userid)
     {
         global $CFG;
         $id = $this->assignment->get_context()->instanceid;
         return $CFG->wwwroot . "/mod/assign/view.php?id=$id&action=viewpluginpage&pluginsubtype=assignfeedback&plugin=witsoj&pluginaction=viewdetails&userid=$userid";
     }
+    /**
+    * @codeCoverageIgnore
+    **/
 
     public static function prod()
     {
@@ -403,6 +415,9 @@ class assign_feedback_witsoj
             }
         }
     }
+    /**
+    * @codeCoverageIgnore
+    **/
     public function rejudge($userid)
     {
         if (!$this->can_rejudge()) {
@@ -415,6 +430,9 @@ class assign_feedback_witsoj
         $text = "Rejudge Requested. Awaiting a free marker.";
         $this->set_witsoj_status($userid, $status, $text);
     }
+    /**
+    * @codeCoverageIgnore
+    **/
     public function rejudge_all()
     {
         // List of all user submissions (even ones created while the plugin is off)
@@ -443,6 +461,9 @@ class assign_feedback_witsoj
         return $r;
         */
     }
+    /**
+    * @codeCoverageIgnore
+    **/
     public function rejudge_orphans()
     {
         // List of all user submissions (even ones created while the plugin is off)
@@ -479,6 +500,7 @@ class assign_feedback_witsoj
       * A grading action is a page that is not specific to a user but to the whole assignment.
       * @return array - An array of action and description strings.
       *                 The action will be passed to grading_action.
+      * @codeCoverageIgnore
       */
     public function get_grading_actions()
     {
@@ -490,6 +512,7 @@ class assign_feedback_witsoj
       *
       * @param string $gradingaction The action chosen from the grading actions menu
       * @return string The page containing the form
+      * @codeCoverageIgnore
       */
     public function grading_action($gradingaction)
     {
@@ -503,7 +526,9 @@ class assign_feedback_witsoj
         }
         return '';
     }
-
+    /**
+    * @codeCoverageIgnore
+    **/
     public static function atomically_book_submission($feedbackid)
     {
         //return true;
