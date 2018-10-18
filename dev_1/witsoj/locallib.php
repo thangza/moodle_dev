@@ -159,8 +159,7 @@ class assign_feedback_witsoj
      * @param stdClass $grade The grade object.
      * @param stdClass $data Data from the form submission.
      * @return boolean True if the comment feedback has been modified, else false.
-     * @
-     codeCoverageIgnore
+     * @codeCoverageIgnore
      */
     public function is_feedback_modified(stdClass $grade, stdClass $data)
     {
@@ -313,37 +312,26 @@ class assign_feedback_witsoj
 
         return true;
     }
-    /**
-    * @codeCoverageIgnore
-    **/
+
     public function get_languages()
     {
         return explode(',', get_config('assignfeedback_witsoj', 'languages'));
     }
-    /**
-    * @codeCoverageIgnore
-    **/
+
     public function get_cpu_limits()
     {
         return array("1", "5", "10", "30", "60");
     }
-    /**
-    * @codeCoverageIgnore
-    **/
+
     public function get_mem_limits()
     {
         return array("1MB", "2MB", "4MB", "8MB", "16MB", "32MB", "64MB");
     }
-    /**
-    * @codeCoverageIgnore
-    **/
+
     public function get_presentation_error_ratios()
     {
         return array("1.0", "0.9", "0.8", "0.7", "0.6", "0.5", "0.4", "0.3", "0.2", "0.1", "0.0");
     }
-    /**
-    * @codeCoverageIgnore
-    **/
     public function get_callback_url()
     {
         global $CFG;
@@ -716,6 +704,9 @@ class assign_feedback_witsoj
 
         return $data;
     }
+    /**
+    * @codeCoverageIgnore
+    **/
     public static function post_to_marker($marker, $data)
     {
         // Setup cURL
@@ -752,6 +743,9 @@ class assign_feedback_witsoj
         //var_dump($responseData);
         return $responseData;
     }
+    /**
+    * @codeCoverageIgnore
+    **/
 
     public static function get_plugin($submission)
     {
@@ -764,7 +758,9 @@ class assign_feedback_witsoj
         }
         return $plugin;
     }
-
+    /**
+    * @codeCoverageIgnore
+    **/
     public static function judge_next_submission($marker = null, $submission = null)
     {
         if ($marker == null or $marker == false) {
@@ -800,7 +796,9 @@ class assign_feedback_witsoj
         $plugin->judge($marker, $userid);
         return true;
     }
-
+    /**
+    * @codeCoverageIgnore
+    **/
     public function judge($marker, $userid, $pathnamehash = null)
     {
         // Data To Send (including testcase metadata, student source, language, limits, pe_ratio, and callback
@@ -822,6 +820,9 @@ class assign_feedback_witsoj
             return false;
         }
     }
+    /**
+    * @codeCoverageIgnore
+    **/
     public static function fetch_pending_submission()
     {
         global $DB;
@@ -844,6 +845,9 @@ class assign_feedback_witsoj
         }
         return $r;
     }
+    /**
+    * @codeCoverageIgnore
+    **/
     public static function marker_free_by_id($markerid)
     {
         // Get marker with lastseen > 2minutes (assume its free)
@@ -857,12 +861,16 @@ class assign_feedback_witsoj
         if (count($rec) == 0) {
             return false;
         }
+
         $r = reset($rec);
         $r->lastseen = $nowts;
         $r->status = ASSIGNFEEDBACK_WITSOJ_MARKER_FREE;
         $DB->update_record('assignfeedback_witsoj_mkr', $r);
         return $r;
     }
+    /**
+    * @codeCoverageIgnore
+    **/
     public static function marker_free($marker, $seen=true)
     {
         global $DB;
@@ -875,6 +883,9 @@ class assign_feedback_witsoj
         $DB->update_record('assignfeedback_witsoj_mkr', $marker);
         return $marker;
     }
+    /**
+    * @codeCoverageIgnore
+    **/
     public static function marker_busy($marker)
     {
         // Get marker with lastseen > 2minutes (assume its free)
@@ -886,6 +897,9 @@ class assign_feedback_witsoj
         $DB->update_record('assignfeedback_witsoj_mkr', $marker);
         return $marker;
     }
+    /**
+    * @codeCoverageIgnore
+    **/
     public static function marker_book($markerid = null)
     {
         // Get marker with lastseen > 2minutes (assume its free)
@@ -919,6 +933,7 @@ class assign_feedback_witsoj
      *
      * @param MoodleQuickForm $mform The form to add elements to
      * @return void
+     * @codeCoverageIgnore
      */
     public function get_settings(MoodleQuickForm $mform)
     {
@@ -976,7 +991,9 @@ class assign_feedback_witsoj
         // Disable comment online if comment feedback plugin is disabled.
         $mform->disabledIf('assignfeedback_witsoj_language', 'assignfeedback_witsoj_enabled', 'notchecked');
     }
-
+    /**
+    * @codeCoverageIgnore
+    **/
     public function data_preprocessing(&$defaultvalues)
     {
         $draftitemid = file_get_submitted_draft_itemid('assignfeedback_witsoj_testcases');
@@ -991,7 +1008,9 @@ class assign_feedback_witsoj
         $defaultvalues['assignfeedback_witsoj_testcases'] = $draftitemid;
         return;
     }
-
+    /**
+    * @codeCoverageIgnore
+    **/
     public static function format_oj_feedback($oj_testcases, $oj_feedback, $getdetails_url)
     {
         $tc_result = json_decode($oj_testcases);
@@ -1151,6 +1170,7 @@ class assign_feedback_witsoj
      * @param stdClass $submission
      * @param stdClass $data - Form data to be filled with the converted submission text and format.
      * @return boolean - True if feedback text was set.
+     * @codeCoverageIgnore
      */
     protected function convert_submission_text_to_feedback($submission, $data)
     {
@@ -1192,6 +1212,7 @@ class assign_feedback_witsoj
      * @param MoodleQuickForm $mform
      * @param stdClass $data
      * @return bool true if elements were added to the form
+     * @codeCoverageIgnore
      */
     public function get_form_elements_for_user($grade, MoodleQuickForm $mform, stdClass $data, $userid)
     {
@@ -1225,6 +1246,7 @@ class assign_feedback_witsoj
      * @param stdClass $grade
      * @param stdClass $data
      * @return bool
+     * @codeCoverageIgnore
      */
     public function save(stdClass $grade, stdClass $data)
     {
@@ -1251,7 +1273,7 @@ class assign_feedback_witsoj
      * @param bool $showviewlink Set to true to show a link to view the full feedback
      * @return string
      */
-     //DO not ad ignore for testing
+     //DO not add ignore for testing
     public function view_summary(stdClass $grade, & $showviewlink)
     {
         error_log("OJ: VIEW SUMMARY");
@@ -1295,6 +1317,7 @@ class assign_feedback_witsoj
      *
      * @param stdClass $grade
      * @return string
+     * @codeCoverageIgnore
      */
     public function view(stdClass $grade)
     {
@@ -1317,6 +1340,7 @@ class assign_feedback_witsoj
      * @param string $type old assignment subtype
      * @param int $version old assignment version
      * @return bool True if upgrade is possible
+     * @codeCoverageIgnore
      */
     public function can_upgrade($type, $version)
     {
@@ -1334,6 +1358,7 @@ class assign_feedback_witsoj
      * @param stdClass $oldassignment - the data for the old assignment
      * @param string $log - can be appended to by the upgrade
      * @return bool was it a success? (false will trigger a rollback)
+     * @codeCoverageIgnore
      */
     public function upgrade_settings(context $oldcontext, stdClass $oldassignment, & $log)
     {
@@ -1353,6 +1378,7 @@ class assign_feedback_witsoj
      * @param stdClass $grade The data record for the new grade
      * @param string $log Record upgrade messages in the log
      * @return bool true or false - false will trigger a rollback
+     * @codeCoverageIgnore
      */
     public function upgrade(
         context $oldcontext,
@@ -1386,6 +1412,7 @@ class assign_feedback_witsoj
      *
      * @param stdClass $grade The grade
      * @return int
+     * @codeCoverageIgnore
      */
     public function format_for_gradebook(stdClass $grade)
     {
@@ -1405,6 +1432,7 @@ class assign_feedback_witsoj
      *
      * @param stdClass $grade The grade
      * @return string
+     * @codeCoverageIgnore
      */
     public function text_for_gradebook(stdClass $grade)
     {
@@ -1446,6 +1474,7 @@ class assign_feedback_witsoj
      * Return a description of external params suitable for uploading an feedback comment from a webservice.
      *
      * @return external_description|null
+     * @codeCoverageIgnore
      */
     public function get_external_parameters()
     {
