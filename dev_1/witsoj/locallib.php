@@ -68,8 +68,7 @@ class assign_feedback_witsoj
      * @return string
      * @codeCoverageIgnore
      */
-
-    public function get_name()
+     public function get_name()
     {
         return get_string('pluginname', 'assignfeedback_witsoj');
     }
@@ -387,7 +386,6 @@ class assign_feedback_witsoj
     /**
     * @codeCoverageIgnore
     **/
-
     public static function prod()
     {
         self::clean();
@@ -622,7 +620,6 @@ class assign_feedback_witsoj
     /**
     * @codeCoverageIgnore
     **/
-
     public function get_marker_data($userid, $pathnamehash = null)
     {
         $data = array();
@@ -746,7 +743,6 @@ class assign_feedback_witsoj
     /**
     * @codeCoverageIgnore
     **/
-
     public static function get_plugin($submission)
     {
         list($course, $cm) = get_course_and_cm_from_cmid($submission->assignmentcontextid, 'assign');
