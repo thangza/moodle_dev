@@ -26,7 +26,7 @@
 Edited by the Wronskians, 2018
  */
 
-defined('MOODLE_INTERNAL') || die();
+//defined('MOODLE_INTERNAL') || die();
 define('ASSIGNFEEDBACK_WITSOJ_TESTCASE_FILEAREA', 'oj_testcases');
 
 define('ASSIGNFEEDBACK_WITSOJ_STATUS_PENDING', 0);
@@ -49,13 +49,6 @@ define('ASSIGNFEEDBACK_WITSOJ_MARKERTIMEOUT', 60);
 define('ASSIGNFEEDBACK_WITSOJ_SUBMISSIONTIMEOUT', 10);
 global $CFG;
 //require_once($CFG->libdir . '/pagelib.php');
-$CFG->dbtype    = 'mysql';
-$CFG->dbhost    = 'localhost';
-$CFG->dbname    = 'moodle';
-$CFG->dbuser    = 'root';
-$CFG->dbpass    = '';
-$CFG->dbpersist =  false;
-$CFG->prefix    = 'mdl_';
 
 
 /**
@@ -90,17 +83,17 @@ class assign_feedback_witsoj
      //Do not ignore for testing
     public function get_feedback_witsoj($gradeid)
     {
-    //  $mysql_host = getenv('MYSQL_HOST') ?: 'localhost';
-    //  $mysql_user = getenv('MYSQL_USER') ?: 'root';
-    //  $mysql_password = getenv('MYSQL_PASSWORD') ?: '';
-    //  $connection_string = "mysql:host={$mysql_host};dbname=moodle";
-    //  $DB = new PDO($connection_string, $mysql_user, $mysql_password);
-        global $DB;
-        return $DB->get_record('assignfeedback_witsoj', array('grade'=>$gradeid));
-    //    $getter=$DB->prepare("SELECT * FROM mdl_assignfeedback_witsoj WHERE id=$gradeid");
-    //    $getter->execute();
-    //    $result=$getter->fetchObject();
-    //    return $result;
+      $mysql_host = getenv('MYSQL_HOST') ?: 'localhost';
+      $mysql_user = getenv('MYSQL_USER') ?: 'root';
+      $mysql_password = getenv('MYSQL_PASSWORD') ?: '';
+      $connection_string = "mysql:host={$mysql_host};dbname=moodle";
+      $DB = new PDO($connection_string, $mysql_user, $mysql_password);
+      //  global $DB;
+      //  return $DB->get_record('assignfeedback_witsoj', array('grade'=>$gradeid));
+        $getter=$DB->prepare("SELECT * FROM mdl_assignfeedback_witsoj WHERE id=$gradeid");
+        $getter->execute();
+        $result=$getter->fetchObject();
+        return $result;
 
     //  return 'Hello world';
     }
