@@ -47,7 +47,7 @@ define('ASSIGNFEEDBACK_WITSOJ_MARKER_BUSY', 2);
 
 define('ASSIGNFEEDBACK_WITSOJ_MARKERTIMEOUT', 60);
 define('ASSIGNFEEDBACK_WITSOJ_SUBMISSIONTIMEOUT', 10);
-//global $CFG;
+global $CFG;
 //require_once($CFG->libdir . '/pagelib.php');
 
 
