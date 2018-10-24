@@ -26,7 +26,7 @@
 Edited by the Wronskians, 2018
  */
 
-//defined('MOODLE_INTERNAL') || die();
+defined('MOODLE_INTERNAL') || die();
 define('ASSIGNFEEDBACK_WITSOJ_TESTCASE_FILEAREA', 'oj_testcases');
 
 define('ASSIGNFEEDBACK_WITSOJ_STATUS_PENDING', 0);
