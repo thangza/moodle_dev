@@ -39,6 +39,13 @@ class locallibTest extends TestCase{
     $this->assertEquals($expected,$result,"Correct");
   }
 
+  public function test_view_summary_done(){
+    $tester=new assign_feedback_witsoj;
+    $result = $tester->view_summary(1);
+    $expected = -2;
+    $this->assertEquals($expected,$result,"Correct");
+  }
+
   public function test_view_summary(){
     $db=$this->getConnection();
     $stmt=$db->prepare("UPDATE mdl_assignfeedback_witsoj SET status = 0 WHERE id=1");

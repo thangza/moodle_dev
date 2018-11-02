@@ -1293,7 +1293,7 @@ class assign_feedback_witsoj
             $temp_id = $grade_id ;
             if ($feedbackcomments->status == ASSIGNFEEDBACK_WITSOJ_STATUS_PENDING or $feedbackcomments->status == ASSIGNFEEDBACK_WITSOJ_STATUS_JUDGING) {
                 //$PAGE->requires->js(new moodle_url($CFG->wwwroot . "/mod/assign/feedback/witsoj/loadAjax.php?gradeid=".$temp_id));
-                require_once('/loadAjax1.php?gradeid='.$temp_id);
+                require_once('loadAjax1.php?gradeid='.$temp_id);
                 $output = loadAjax();
                 return $output;
             }
