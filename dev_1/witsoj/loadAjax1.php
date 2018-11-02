@@ -1,12 +1,11 @@
 <?php
 
-function loadAjax(){
-	$id = $_GET["gradeid"] ;
+function loadAjax($id){
 	return $id;
 }
 
 ?>
-
+/*
 setInterval(function(){
 	var id = <?php echo $id ?> ;
 	$.ajax({
@@ -30,3 +29,4 @@ setInterval(function(){
 	});
 
 },1000)
+*/
