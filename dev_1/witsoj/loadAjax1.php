@@ -1,6 +1,9 @@
 <?php
 
-$id = $_GET["gradeid"] ;
+function loadAjax(){
+	$id = $_GET["gradeid"] ;
+	return $id;
+}
 
 ?>
 

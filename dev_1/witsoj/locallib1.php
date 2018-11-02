@@ -206,8 +206,8 @@ class assign_feedback_witsoj
      * @param string $name
      * @param int $gradeid
      * @return string
-     * @codeCoverageIgnore
      */
+     //Do not ignore for testing
     public function get_editor_text($name, $gradeid)
     {
         if ($name == 'comments') {
@@ -1269,14 +1269,15 @@ class assign_feedback_witsoj
      * @param bool $showviewlink Set to true to show a link to view the full feedback
      * @return string
      */
-     //DO not add ignore for testing
-    public function view_summary(stdClass $grade, & $showviewlink)
+     //Do not add ignore for testing
+    public function view_summary($grade_id)
     {
         error_log("OJ: VIEW SUMMARY");
-        $feedbackcomments = $this->get_feedback_witsoj($grade->id);
+        $feedbackcomments = $this->get_feedback_witsoj($grade_id);
         $buttons = "";
+        /*
         if ($this->can_rejudge()) {
-            $rejudge_cur = $this->get_rejudge_url($grade->userid);
+            $rejudge_cur = $this->get_rejudge_url($grade_userid);
             $rejudge_all = $this->get_rejudge_all_url();
             $prod = $this->get_prod_url();
             //$buttons .= "<form method='post' action='#'>";
@@ -1287,11 +1288,16 @@ class assign_feedback_witsoj
         }
         global $PAGE;
         global $CFG ;
+        */
         if ($feedbackcomments) {
-            $temp_id = $grade->id ;
+            $temp_id = $grade_id ;
             if ($feedbackcomments->status == ASSIGNFEEDBACK_WITSOJ_STATUS_PENDING or $feedbackcomments->status == ASSIGNFEEDBACK_WITSOJ_STATUS_JUDGING) {
-                $PAGE->requires->js(new moodle_url($CFG->wwwroot . "/mod/assign/feedback/witsoj/loadAjax.php?gradeid=".$temp_id));
+                //$PAGE->requires->js(new moodle_url($CFG->wwwroot . "/mod/assign/feedback/witsoj/loadAjax.php?gradeid=".$temp_id));
+                require_once('/loadAjax1.php?gradeid='.$temp_id);
+                $output = loadAjax();
+                return $output;
             }
+            /*
             $text = format_text(
                 $feedbackcomments->commenttext,
                                 $feedbackcomments->commentformat,
@@ -1301,11 +1307,13 @@ class assign_feedback_witsoj
 
             // Show the view all link if the text has been shortened.
             #$showviewlink = $short != $text;
-            $showviewlink = $short != $text;
+            #$showviewlink = $short != $text;
 
             return $buttons."<div id='tmp'>".$text."</div>";
+            */
         }
-        return $buttons."<div id='tmp'></div>";
+        //return $buttons."<div id='tmp'></div>";
+        return -1;
     }
 
     /**

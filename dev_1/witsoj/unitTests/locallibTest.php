@@ -17,7 +17,7 @@ class locallibTest extends TestCase{
 
 
 
-  public function testdbTest(){
+  public function test_get_feedback_witsoj(){
     #global $DB;
     $db=$this->getConnection();
     $tester=new assign_feedback_witsoj;
@@ -28,7 +28,7 @@ class locallibTest extends TestCase{
     $this->assertEquals($expected,$result,"Correct");
   }
 
-  public function testGetEditorText(){
+  public function test_get_editor_text(){
     $db=$this->getConnection();
     $tester=new assign_feedback_witsoj;
     $result=$tester->get_editor_text('comments',1);
@@ -36,6 +36,13 @@ class locallibTest extends TestCase{
     $stmt->execute();
     $expected1 = $stmt->fetchObject();
     $expected=$expected1->commenttext;
+    $this->assertEquals($expected,$result,"Correct");
+  }
+
+  public function test_view_summary(){
+    $tester=new assign_feedback_witsoj;
+    $result = $tester->view_summary(1);
+    $expected = 1;
     $this->assertEquals($expected,$result,"Correct");
   }
 
