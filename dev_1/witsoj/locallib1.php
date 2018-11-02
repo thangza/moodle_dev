@@ -1090,6 +1090,7 @@ class assign_feedback_witsoj
     //Do not add ignore for testing
     public function view_page($pluginaction)
     {
+        //@codeCoverageIgnoreStart
         if ($pluginaction == "prod") {
             error_log("Prod");
             self::prod();
@@ -1125,6 +1126,7 @@ class assign_feedback_witsoj
             error_log("clean");
             $n = $this->clean();
             print("Successfully cleaned $n broken submissions.");
+        //@codeCoverageIgnoreEnd
         } elseif ($pluginaction == "viewdetails") {
             error_log("viewdetails");
             global $DB;
