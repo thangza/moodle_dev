@@ -1,6 +1,6 @@
 <?php
 
-public function loadAjax($id){
+function loadAjax($id){
 	return $id;
 }
 
