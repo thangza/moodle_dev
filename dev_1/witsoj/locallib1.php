@@ -1297,6 +1297,9 @@ class assign_feedback_witsoj
                 $output = loadAjax();
                 return $output;
             }
+            else{
+              return -2;
+            }
             /*
             $text = format_text(
                 $feedbackcomments->commenttext,
@@ -1312,8 +1315,10 @@ class assign_feedback_witsoj
             return $buttons."<div id='tmp'>".$text."</div>";
             */
         }
+        else{
+          return -1;
+        }
         //return $buttons."<div id='tmp'></div>";
-        return -1;
     }
 
     /**
