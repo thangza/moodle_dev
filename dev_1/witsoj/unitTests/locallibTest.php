@@ -40,6 +40,9 @@ class locallibTest extends TestCase{
   }
 
   public function test_view_summary(){
+    $db=$this->getConnection();
+    $stmt=$db->prepare("UPDATE mdl_assignfeedback_witsoj SET status = 0 WHERE id=1");
+    $stmt->execute();
     $tester=new assign_feedback_witsoj;
     $result = $tester->view_summary(1);
     $expected = 1;
