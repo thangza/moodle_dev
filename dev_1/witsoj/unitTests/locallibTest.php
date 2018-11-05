@@ -63,6 +63,14 @@ class locallibTest extends TestCase{
     $expected = 1;
     $this->assertEquals($expected,$result,"Correct");
   }
+
+  public function test_view_summary_invalid_gradeid(){
+    $tester=new assign_feedback_witsoj;
+    $result = $tester->view_summary(100);
+    $expected = -1;
+    $this->assertEquals($expected,$result,"Correct");
+  }
+
   public function test_view_page_lecturer_compile_error(){
     $db=$this->getConnection();
     $tester=new assign_feedback_witsoj;
