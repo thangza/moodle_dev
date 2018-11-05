@@ -111,7 +111,7 @@ class locallibTest extends TestCase{
       }*/
       $jsond = json_decode($rec, true) ;
       $result=$tester->view_page($pluginaction, $witsoj_assignment_id, $witsoj_assign_userid, $can_rejudge_variable);
-      $this->assertEquals($jsond[0]['progout'].$rec[0]['modelout'], $result);
+      $this->assertEquals($jsond[0]['progout'].$jsond[0]['modelout'], $result);
     }
     public function test_view_page_student_model_out(){
       $db=$this->getConnection();
