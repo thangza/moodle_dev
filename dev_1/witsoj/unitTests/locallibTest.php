@@ -72,7 +72,7 @@ class locallibTest extends TestCase{
     }*/
     $jsond = json_decode($rec, true);
     $result=$tester->view_page($pluginaction, $witsoj_assignment_id, $witsoj_assign_userid, $can_rejudge_variable);
-    $this->assertEquals($jsond[0]['stderr'], $result);
+    $this->assertEquals($rec[0]['stderr'], $result);
   }
     public function test_view_page_student_compile_error(){
       $db=$this->getConnection();
@@ -90,7 +90,7 @@ class locallibTest extends TestCase{
       }*/
       $jsond = json_decode($rec, true) ;
       $result=$tester->view_page($pluginaction, $witsoj_assignment_id, $witsoj_assign_userid, $can_rejudge_variable);
-      $this->assertEquals($jsond[0]['stderr'], $result);
+      $this->assertEquals($rec[0]['stderr'], $result);
     }
 
     public function test_view_page_lecturer_model_out(){
