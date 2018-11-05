@@ -1182,7 +1182,8 @@ class assign_feedback_witsoj
                 // lecturer
                 if ($jsond[0]['result'] != 2) {
                     $testcase = 0;
-                    return $jsond[$testcase]['progout'].$jsond[$testcase]['modelout'];
+                    //return $jsond[$testcase]['progout'].$jsond[$testcase]['modelout'];
+                    return $jsond[$testcase]['result'];
                     //echo "Test Case: Progout = ".$jsond[$testcase]['progout']." and the Correct output = ".$jsond[$testcase]['modelout'];
                 } else {
                     return $jsond[0]['stderr'] ;
