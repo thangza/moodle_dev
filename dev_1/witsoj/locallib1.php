@@ -1172,11 +1172,12 @@ class assign_feedback_witsoj
             $stmt->execute();
             $rec = $stmt->fetchObject();
             $myarr = array();
-            foreach ($rec as $ojtests => $v) {
+            /*foreach ($rec as $ojtests => $v) {
                 //$sub = substr($ojtests, 1, strlen($ojtests) - 2);
                 //$jsond = json_decode($sub);
                 $jsond = json_decode($ojtests, true) ;
-            }
+            }*/
+            $jsond = json_decode($rec, true);
             if ($can_rejudge_variable==True) {
                 // lecturer
                 if ($jsond[0]['result'] != 2) {

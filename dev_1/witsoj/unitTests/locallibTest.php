@@ -67,9 +67,10 @@ class locallibTest extends TestCase{
     (assignmentcontextid = '$witsoj_assignment_id' AND userid = '$witsoj_assign_userid')");
     $stmt->execute();
     $rec = $stmt->fetchObject();
-    foreach ($rec as $ojtests => $v) {
+    /*foreach ($rec as $ojtests => $v) {
         $jsond = json_decode($ojtests, true) ;
-    }
+    }*/
+    $jsond = json_decode($rec, true);
     $result=$tester->view_page($pluginaction, $witsoj_assignment_id, $witsoj_assign_userid, $can_rejudge_variable);
     $this->assertEquals($jsond[0]['stderr'], $result);
   }
@@ -84,9 +85,10 @@ class locallibTest extends TestCase{
       (assignmentcontextid = '$witsoj_assignment_id' AND userid = '$witsoj_assign_userid')");
       $stmt->execute();
       $rec = $stmt->fetchObject();
-      foreach ($rec as $ojtests => $v) {
+      /*foreach ($rec as $ojtests => $v) {
           $jsond = json_decode($ojtests, true) ;
-      }
+      }*/
+      $jsond = json_decode($rec, true) ;
       $result=$tester->view_page($pluginaction, $witsoj_assignment_id, $witsoj_assign_userid, $can_rejudge_variable);
       $this->assertEquals($jsond[0]['stderr'], $result);
     }
@@ -102,11 +104,12 @@ class locallibTest extends TestCase{
       (assignmentcontextid = '$witsoj_assignment_id' AND userid = '$witsoj_assign_userid')");
       $stmt->execute();
       $rec = $stmt->fetchObject();
-      foreach ($rec as $ojtests => $v) {
+      /*foreach ($rec as $ojtests => $v) {
           $jsond = json_decode($ojtests, true) ;
-      }
+      }*/
+      $jsond = json_decode($rec, true) ;
       $result=$tester->view_page($pluginaction, $witsoj_assignment_id, $witsoj_assign_userid, $can_rejudge_variable);
-      $this->assertEquals($jsond[0]['progout'].$json[0]['modelout'], $result);
+      $this->assertEquals($jsond[0]['progout'].$rec[0]['modelout'], $result);
     }
     public function test_view_page_student_model_out(){
       $db=$this->getConnection();
@@ -119,9 +122,10 @@ class locallibTest extends TestCase{
       (assignmentcontextid = '$witsoj_assignment_id' AND userid = '$witsoj_assign_userid')");
       $stmt->execute();
       $rec = $stmt->fetchObject();
-      foreach ($rec as $ojtests => $v) {
+      /*foreach ($rec as $ojtests => $v) {
           $jsond = json_decode($ojtests, true) ;
-      }
+      }*/
+      $jsond = json_decode($rec, true) ;
       $result=$tester->view_page($pluginaction, $witsoj_assignment_id, $witsoj_assign_userid, $can_rejudge_variable);
       $this->assertEquals("Nothing to display", $result);
     }
