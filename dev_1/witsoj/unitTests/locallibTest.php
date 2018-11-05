@@ -84,11 +84,11 @@ class locallibTest extends TestCase{
       $stmt=$db->prepare("SELECT ojtests FROM mdl_assignfeedback_witsoj WHERE
       (assignmentcontextid = '$witsoj_assignment_id' AND userid = '$witsoj_assign_userid')");
       $stmt->execute();
-      $rec = $stmt->fetchColumn();
-      /*foreach ($rec as $ojtests => $v) {
+      $rec = $stmt->fetchObject();
+      foreach ($rec as $ojtests => $v) {
           $jsond = json_decode($ojtests, true) ;
-      }*/
-      $jsond = json_decode($rec, true) ;
+      }
+      //$jsond = json_decode($rec, true) ;
       $result=$tester->view_page($pluginaction, $witsoj_assignment_id, $witsoj_assign_userid, $can_rejudge_variable);
       $this->assertEquals($jsond[0]['stderr'], $result);
     }

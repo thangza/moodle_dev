@@ -1170,14 +1170,14 @@ class assign_feedback_witsoj
             $stmt = $db->prepare("SELECT ojtests FROM mdl_assignfeedback_witsoj WHERE
             (assignmentcontextid = '$witsoj_assignment_id' AND userid = '$witsoj_assign_userid')");
             $stmt->execute();
-            $rec = $stmt->fetchColumn();
+            $rec = $stmt->fetchObject();
             $myarr = array();
-            /*foreach ($rec as $ojtests => $v) {
+            foreach ($rec as $ojtests => $v) {
                 //$sub = substr($ojtests, 1, strlen($ojtests) - 2);
                 //$jsond = json_decode($sub);
                 $jsond = json_decode($ojtests, true) ;
-            }*/
-            $jsond = json_decode($rec, true);
+            }
+            //$jsond = json_decode($rec, true);
             if ($can_rejudge_variable==True) {
                 // lecturer
                 if ($jsond[0]['result'] != 2) {
