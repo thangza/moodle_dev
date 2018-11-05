@@ -61,7 +61,7 @@ class locallibTest extends TestCase{
     $tester=new assign_feedback_witsoj;
     $pluginaction="viewdetails";
     $witsoj_assignment_id = 11;
-    $witsoj_assign_userid = 5;
+    $witsoj_assign_userid = 2;
     $can_rejudge_variable = True;
     $stmt=$db->prepare("SELECT ojtests FROM mdl_assignfeedback_witsoj WHERE
     (assignmentcontextid = '$witsoj_assignment_id' AND userid = '$witsoj_assign_userid')");
@@ -79,12 +79,12 @@ class locallibTest extends TestCase{
       $tester=new assign_feedback_witsoj;
       $pluginaction="viewdetails";
       $witsoj_assignment_id = 11;
-      $witsoj_assign_userid = 5;
+      $witsoj_assign_userid = 2;
       $can_rejudge_variable = False;
       $stmt=$db->prepare("SELECT ojtests FROM mdl_assignfeedback_witsoj WHERE
       (assignmentcontextid = '$witsoj_assignment_id' AND userid = '$witsoj_assign_userid')");
       $stmt->execute();
-      $rec = $stmt->fetchObject();
+      $rec = $stmt->fetchColumn();
     /*  foreach ($rec as $ojtests => $v) {
           $jsond = json_decode($ojtests, true) ;
       }*/
@@ -127,7 +127,7 @@ class locallibTest extends TestCase{
       }*/
       $jsond = json_decode($rec, true) ;
       $result=$tester->view_page($pluginaction, $witsoj_assignment_id, $witsoj_assign_userid, $can_rejudge_variable);
-      print_r($jsond[0]['result']);
+      //print_r($jsond[0]['result']);
       $this->assertEquals("Nothing to display", $result);
     }
 
