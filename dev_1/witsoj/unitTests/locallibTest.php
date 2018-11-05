@@ -70,7 +70,8 @@ class locallibTest extends TestCase{
     $witsoj_assignment_id = 5;
     $witsoj_assign_userid = 11;
     $can_rejudge_variable = True;
-    $this->assertEquals($jsond[0]['stderr'], tester->view_page($pluginaction, $witsoj_assignment_id, $witsoj_assign_userid, $can_rejudge_variable));
+    $result=$tester->view_page($pluginaction, $witsoj_assignment_id, $witsoj_assign_userid, $can_rejudge_variable);
+    $this->assertEquals($jsond[0]['stderr'], $result);
   }
 
   public function testHello(){
