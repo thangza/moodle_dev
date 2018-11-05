@@ -70,10 +70,61 @@ class locallibTest extends TestCase{
     foreach ($rec as $ojtests => $v) {
         $jsond = json_decode($ojtests, true) ;
     }
-
     $result=$tester->view_page($pluginaction, $witsoj_assignment_id, $witsoj_assign_userid, $can_rejudge_variable);
     $this->assertEquals($jsond[0]['stderr'], $result);
   }
+    public function test_view_page_student_compile_error(){
+      $db=$this->getConnection();
+      $tester=new assign_feedback_witsoj;
+      $pluginaction="viewdetails";
+      $witsoj_assignment_id = 5;
+      $witsoj_assign_userid = 11;
+      $can_rejudge_variable = False;
+      $stmt=$db->prepare("SELECT ojtests FROM mdl_assignfeedback_witsoj WHERE
+      (assignmentcontextid = '$witsoj_assignment_id' AND userid = '$witsoj_assign_userid')");
+      $stmt->execute();
+      $rec = $stmt->fetchObject();
+      foreach ($rec as $ojtests => $v) {
+          $jsond = json_decode($ojtests, true) ;
+      }
+      $result=$tester->view_page($pluginaction, $witsoj_assignment_id, $witsoj_assign_userid, $can_rejudge_variable);
+      $this->assertEquals($jsond[0]['stderr'], $result);
+    }
+
+    public function test_view_page_lecturer_model_out(){
+      $db=$this->getConnection();
+      $tester=new assign_feedback_witsoj;
+      $pluginaction="viewdetails";
+      $witsoj_assignment_id = 1;
+      $witsoj_assign_userid = 2;
+      $can_rejudge_variable = True;
+      $stmt=$db->prepare("SELECT ojtests FROM mdl_assignfeedback_witsoj WHERE
+      (assignmentcontextid = '$witsoj_assignment_id' AND userid = '$witsoj_assign_userid')");
+      $stmt->execute();
+      $rec = $stmt->fetchObject();
+      foreach ($rec as $ojtests => $v) {
+          $jsond = json_decode($ojtests, true) ;
+      }
+      $result=$tester->view_page($pluginaction, $witsoj_assignment_id, $witsoj_assign_userid, $can_rejudge_variable);
+      $this->assertEquals($jsond[0]['progout'].$json[0]['modelout'], $result);
+    }
+    public function test_view_page_student_model_out(){
+      $db=$this->getConnection();
+      $tester=new assign_feedback_witsoj;
+      $pluginaction="viewdetails";
+      $witsoj_assignment_id = 1;
+      $witsoj_assign_userid = 2;
+      $can_rejudge_variable = False;
+      $stmt=$db->prepare("SELECT ojtests FROM mdl_assignfeedback_witsoj WHERE
+      (assignmentcontextid = '$witsoj_assignment_id' AND userid = '$witsoj_assign_userid')");
+      $stmt->execute();
+      $rec = $stmt->fetchObject();
+      foreach ($rec as $ojtests => $v) {
+          $jsond = json_decode($ojtests, true) ;
+      }
+      $result=$tester->view_page($pluginaction, $witsoj_assignment_id, $witsoj_assign_userid, $can_rejudge_variable);
+      $this->assertEquals("Nothing to display", $result);
+    }
 
   public function testHello(){
     $tester=new assign_feedback_witsoj;
