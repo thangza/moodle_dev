@@ -46,6 +46,7 @@ class locallibTest extends TestCase{
     $this->assertEquals($expected,$result,"Correct");
   }
 
+
   public function test_view_summary(){
     $db=$this->getConnection();
     $stmt=$db->prepare("UPDATE mdl_assignfeedback_witsoj SET status = 0 WHERE id=1");
@@ -54,6 +55,22 @@ class locallibTest extends TestCase{
     $result = $tester->view_summary(1);
     $expected = 1;
     $this->assertEquals($expected,$result,"Correct");
+  }
+  public function test_view_page_lecturer_compile_error(){
+    $db=$this->getConnection();
+    $stmt=$db->prepare("SELECT ojtests FROM mdl_assignfeedback_witsoj WHERE
+    (assignmentcontextid = '$witsoj_assignment_id' AND userid = '$witsoj_assign_userid')");
+    $stmt->execute();
+    $rec = $stmt->fetchObject();
+    foreach ($rec as $ojtests => $v) {
+        $jsond = json_decode($ojtests, true) ;
+    }
+    $tester=new assign_feedback_witsoj;
+    $pluginaction="viewdetails";
+    $witsoj_assignment_id = 5;
+    $witsoj_assign_userid = 11;
+    $can_rejudge_variable = True;
+    $this->assertEquals($jsond[0]['stderr'], tester->view_page($pluginaction, $witsoj_assignment_id, $witsoj_assign_userid, $can_rejudge_variable));
   }
 
   public function testHello(){
