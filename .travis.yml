@@ -17,7 +17,7 @@ before_install:
   - composer self-update --rollback
   - mysql -e 'CREATE DATABASE moodle;'
   - mysql -u root --password='' moodle < dev_1/witsoj/dump_sprint2.sql
-  - mysql -e 'USE moodle; SELECT id FROM mdl_assignfeedback_witsoj;'
+  - mysql -e 'USE moodle; SELECT * FROM mdl_assignfeedback_witsoj WHERE id=2;'
 install:
   - composer require satooshi/php-coveralls:~0.6@stable
   - composer require --dev phpunit/dbunit
