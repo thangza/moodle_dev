@@ -1180,18 +1180,17 @@ class assign_feedback_witsoj
             //$jsond = json_decode($rec, true);
             if ($can_rejudge_variable==True) {
                 // lecturer
-                //if ($jsond[0]['result'] != 2) {
-                if ($rec[0]['result'] != 2) {
+                if ($jsond[0]['result'] != 2) {
                     $testcase = 0;
-                    return $rec[$testcase]['progout'].$rec[$testcase]['modelout'];
+                    return $jsond[$testcase]['progout'].$jsond[$testcase]['modelout'];
                     //echo "Test Case: Progout = ".$jsond[$testcase]['progout']." and the Correct output = ".$jsond[$testcase]['modelout'];
                 } else {
-                    return $rec[0]['stderr'] ;
+                    return $jsond[0]['stderr'] ;
                 }
             } else {
                 // student
                 if ($rec[0]['result'] == 2) {
-                    return $rec[0]['stderr'];
+                    return $jsond[0]['stderr'];
                 } else {
                     return "Nothing to display" ;
                 }
