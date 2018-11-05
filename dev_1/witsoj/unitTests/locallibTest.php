@@ -85,10 +85,10 @@ class locallibTest extends TestCase{
       (assignmentcontextid = '$witsoj_assignment_id' AND userid = '$witsoj_assign_userid')");
       $stmt->execute();
       $rec = $stmt->fetchObject();
-      foreach ($rec as $ojtests => $v) {
+    /*  foreach ($rec as $ojtests => $v) {
           $jsond = json_decode($ojtests, true) ;
-      }
-      //$jsond = json_decode($rec, true) ;
+      }*/
+      $jsond = json_decode($rec, true) ;
       $result=$tester->view_page($pluginaction, $witsoj_assignment_id, $witsoj_assign_userid, $can_rejudge_variable);
       $this->assertEquals($jsond[0]['stderr'], $result);
     }
@@ -127,6 +127,7 @@ class locallibTest extends TestCase{
       }*/
       $jsond = json_decode($rec, true) ;
       $result=$tester->view_page($pluginaction, $witsoj_assignment_id, $witsoj_assign_userid, $can_rejudge_variable);
+      print_r($jsond[0]['result']);
       $this->assertEquals("Nothing to display", $result);
     }
 
