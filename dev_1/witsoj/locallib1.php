@@ -1064,7 +1064,10 @@ class assign_feedback_witsoj
         $out .= "</table>";
         return $out;
     }
-//Do not add ignore for testing
+    //Do not add ignore for testing
+    /**
+    * @codeCoverageIgnore
+    **/
     public function returned_grade($markerid, $userid, $newgrade, $status, $oj_testcases, $oj_feedback)
     {
         global $DB;
