@@ -60,7 +60,7 @@ class locallibTest extends TestCase{
     $db=$this->getConnection();
     $tester=new assign_feedback_witsoj;
     $pluginaction="viewdetails";
-    $witsoj_assignment_id = 9;
+    $witsoj_assignment_id = 11;
     $witsoj_assign_userid = 2;
     $can_rejudge_variable = True;
     $stmt=$db->prepare("SELECT ojtests FROM mdl_assignfeedback_witsoj WHERE
