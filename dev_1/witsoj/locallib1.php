@@ -311,26 +311,37 @@ class assign_feedback_witsoj
 
         return true;
     }
-
+    /**
+    * @codeCoverageIgnore
+    **/
     public function get_languages()
     {
         return explode(',', get_config('assignfeedback_witsoj', 'languages'));
     }
-
+    /**
+    * @codeCoverageIgnore
+    **/
     public function get_cpu_limits()
     {
         return array("1", "5", "10", "30", "60");
     }
-
+    /**
+    * @codeCoverageIgnore
+    **/
     public function get_mem_limits()
     {
         return array("1MB", "2MB", "4MB", "8MB", "16MB", "32MB", "64MB");
     }
-
+    /**
+    * @codeCoverageIgnore
+    **/
     public function get_presentation_error_ratios()
     {
         return array("1.0", "0.9", "0.8", "0.7", "0.6", "0.5", "0.4", "0.3", "0.2", "0.1", "0.0");
     }
+    /*8
+    * @codeCoverageIgnore
+    **/
     public function get_callback_url()
     {
         global $CFG;
@@ -470,6 +481,9 @@ class assign_feedback_witsoj
         }
         return $n;
     }
+    /**
+    * @codeCoverageIgnore
+    **/
     public static function clean()
     {
         global $DB;
@@ -1457,6 +1471,7 @@ class assign_feedback_witsoj
      * The assignment has been deleted - cleanup
      *
      * @return bool
+     * @codeCoverageIgnore
      */
     public function delete_instance()
     {
@@ -1474,6 +1489,7 @@ class assign_feedback_witsoj
      *
      * @param stdClass $grade
      * @return bool
+     * @codeCoverageIgnore
      */
     public function is_empty(stdClass $grade)
     {
@@ -1499,6 +1515,7 @@ class assign_feedback_witsoj
      *
      * @return array the list of settings
      * @since Moodle 3.2
+     * @codeCoverageIgnore
      */
     public function get_config_for_external()
     {
