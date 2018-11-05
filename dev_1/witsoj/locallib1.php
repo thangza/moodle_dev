@@ -61,6 +61,18 @@ global $CFG;
 //class assign_feedback_witsoj extends assign_feedback_plugin
 class assign_feedback_witsoj
 {
+  /**
+   * Connect to the stub database - used for unit testing
+   * @codeCoverageIgnore
+   */
+    public function getConnection(){
+      $mysql_host = getenv('MYSQL_HOST') ?: 'localhost';
+      $mysql_user = getenv('MYSQL_USER') ?: 'root';
+      $mysql_password = getenv('MYSQL_PASSWORD') ?: '';
+      $connection_string = "mysql:host={$mysql_host};dbname=moodle";
+      $db = new PDO($connection_string, $mysql_user, $mysql_password);
+      return $db;
+    }
 
 
     /**
@@ -1105,7 +1117,7 @@ class assign_feedback_witsoj
         }
     }
     //Do not add ignore for testing
-    public function view_page($pluginaction)
+    public function view_page($pluginaction, $witsoj_assignment_id,$witsoj_assign_userid,$can_rejudge_variable)
     {
         //@codeCoverageIgnoreStart
         if ($pluginaction == "prod") {
@@ -1146,33 +1158,40 @@ class assign_feedback_witsoj
         //@codeCoverageIgnoreEnd
         } elseif ($pluginaction == "viewdetails") {
             error_log("viewdetails");
-            global $DB;
-            $witsoj_assign_userid = required_param('userid', PARAM_INT);
-            $witsoj_assignment_id = required_param('id', PARAM_INT);
-
+            //global $DB;
+            //$witsoj_assign_userid = required_param('userid', PARAM_INT);
+            //$witsoj_assignment_id = required_param('id', PARAM_INT);
+            /*
             $sql = "SELECT ojtests FROM mdl_assignfeedback_witsoj WHERE
             (assignmentcontextid = '$witsoj_assignment_id' AND userid = '$witsoj_assign_userid')";
             $rec = $DB->get_records_sql($sql);
+            */
+            $db=$this->getConnection();
+            $stmt = $db->prepare("SELECT ojtests FROM mdl_assignfeedback_witsoj WHERE
+            (assignmentcontextid = '$witsoj_assignment_id' AND userid = '$witsoj_assign_userid')");
+            $stmt->execute();
+            $rec = $stmt->fetchObject();
             $myarr = array();
             foreach ($rec as $ojtests => $v) {
                 //$sub = substr($ojtests, 1, strlen($ojtests) - 2);
                 //$jsond = json_decode($sub);
                 $jsond = json_decode($ojtests, true) ;
             }
-            if ($this->can_rejudge()) {
+            if ($can_rejudge_variable==True) {
                 // lecturer
                 if ($jsond[0]['result'] != 2) {
-                    $testcase = required_param('testcase', PARAM_INT);
-                    echo "Test Case: Progout = ".$jsond[$testcase]['progout']." and the Correct output = ".$jsond[$testcase]['modelout'];
+                    $testcase = 0;
+                    return $jsond[$testcase]['progout'].$jsond[$testcase]['modelout'];
+                    //echo "Test Case: Progout = ".$jsond[$testcase]['progout']." and the Correct output = ".$jsond[$testcase]['modelout'];
                 } else {
-                    echo $jsond[0]['stderr'] ;
+                    return $jsond[0]['stderr'] ;
                 }
             } else {
                 // student
                 if ($jsond[0]['result'] == 2) {
-                    echo $jsond[0]['stderr'];
+                    return $jsond[0]['stderr'];
                 } else {
-                    echo "Nothing to display" ;
+                    return "Nothing to display" ;
                 }
             }
         }
