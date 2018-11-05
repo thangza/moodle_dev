@@ -1177,7 +1177,7 @@ class assign_feedback_witsoj
                 //$jsond = json_decode($sub);
                 $jsond = json_decode($ojtests, true) ;
             }*/
-            //$jsond = json_decode($rec, true);
+            $jsond = json_decode($rec, true);
             if ($can_rejudge_variable==True) {
                 // lecturer
                 if ($jsond[0]['result'] != 2) {
@@ -1189,7 +1189,7 @@ class assign_feedback_witsoj
                 }
             } else {
                 // student
-                if ($rec[0]['result'] == 2) {
+                if ($jsond[0]['result'] == 2) {
                     return $jsond[0]['stderr'];
                 } else {
                     return "Nothing to display" ;
