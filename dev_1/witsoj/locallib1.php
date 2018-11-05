@@ -1170,7 +1170,7 @@ class assign_feedback_witsoj
             $stmt = $db->prepare("SELECT ojtests FROM mdl_assignfeedback_witsoj WHERE
             (assignmentcontextid = '$witsoj_assignment_id' AND userid = '$witsoj_assign_userid')");
             $stmt->execute();
-            $rec = $stmt->fetchObject();
+            $rec = $stmt->fetchColumn();
             $myarr = array();
             /*foreach ($rec as $ojtests => $v) {
                 //$sub = substr($ojtests, 1, strlen($ojtests) - 2);

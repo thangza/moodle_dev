@@ -86,7 +86,7 @@ class locallibTest extends TestCase{
       $stmt=$db->prepare("SELECT ojtests FROM mdl_assignfeedback_witsoj WHERE
       (assignmentcontextid = '$witsoj_assignment_id' AND userid = '$witsoj_assign_userid')");
       $stmt->execute();
-      $rec = $stmt->fetchObject();
+      $rec = $stmt->fetchColumn();
     /*  foreach ($rec as $ojtests => $v) {
           $jsond = json_decode($ojtests, true) ;
       }*/
@@ -105,7 +105,7 @@ class locallibTest extends TestCase{
       $stmt=$db->prepare("SELECT ojtests FROM mdl_assignfeedback_witsoj WHERE
       (assignmentcontextid = '$witsoj_assignment_id' AND userid = '$witsoj_assign_userid')");
       $stmt->execute();
-      $rec = $stmt->fetchObject();
+      $rec = $stmt->fetchColumn();
       /*foreach ($rec as $ojtests => $v) {
           $jsond = json_decode($ojtests, true) ;
       }*/
@@ -123,7 +123,7 @@ class locallibTest extends TestCase{
       $stmt=$db->prepare("SELECT ojtests FROM mdl_assignfeedback_witsoj WHERE
       (assignmentcontextid = '$witsoj_assignment_id' AND userid = '$witsoj_assign_userid')");
       $stmt->execute();
-      $rec = $stmt->fetchObject();
+      $rec = $stmt->fetchColumn();
       /*foreach ($rec as $ojtests => $v) {
           $jsond = json_decode($ojtests, true) ;
       }*/
