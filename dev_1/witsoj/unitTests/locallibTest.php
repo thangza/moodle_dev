@@ -60,19 +60,20 @@ class locallibTest extends TestCase{
     $db=$this->getConnection();
     $tester=new assign_feedback_witsoj;
     $pluginaction="viewdetails";
-    $witsoj_assignment_id = 11;
+    $witsoj_assignment_id = 9;
     $witsoj_assign_userid = 2;
     $can_rejudge_variable = True;
     $stmt=$db->prepare("SELECT ojtests FROM mdl_assignfeedback_witsoj WHERE
     (assignmentcontextid = '$witsoj_assignment_id' AND userid = '$witsoj_assign_userid')");
     $stmt->execute();
-    $rec = $stmt->fetchObject();
+    $rec = $stmt->fetchColumn();
     /*foreach ($rec as $ojtests => $v) {
         $jsond = json_decode($ojtests, true) ;
     }*/
     $jsond = json_decode($rec, true);
     $result=$tester->view_page($pluginaction, $witsoj_assignment_id, $witsoj_assign_userid, $can_rejudge_variable);
-    $this->assertEquals($jsond[0]['stderr'], $result);
+    $expected=$jsond[0]['stderr'];
+    $this->assertEquals($expected, $result);
   }
     public function test_view_page_student_compile_error(){
       $db=$this->getConnection();
