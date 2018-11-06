@@ -174,5 +174,12 @@ class locallibTest extends TestCase{
         $this->assertEquals($expected,$result,"Correct");
     }
 
+    public function test_supports_quickgrading(){
+        $tester=new assign_feedback_witsoj;
+        $expected = false;
+        $result = $tester->supports_quickgrading();
+        $this->assertEquals($expected,$result,"Correct");
+    }
+
 
 }
