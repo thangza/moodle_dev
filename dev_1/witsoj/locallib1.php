@@ -189,8 +189,8 @@ class assign_feedback_witsoj
      * Override to indicate a plugin supports quickgrading.
      *
      * @return boolean - True if the plugin supports quickgrading
+     * @codeCoverageIgnore
      */
-     //Do not ignore
     public function supports_quickgrading()
     {
         return false;
