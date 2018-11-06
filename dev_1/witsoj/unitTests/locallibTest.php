@@ -148,5 +148,15 @@ class locallibTest extends TestCase{
       $this->assertEquals("Nothing to display", $result);
     }
 
+    public function test_text_for_gradebook(){
+        $id = 11;
+        $tester=new assign_feedback_witsoj;
+        $expected = tester->get_feedback_witsoj($id)->commenttext;
+        if(is_null($expected)){
+          $expected = '';
+        }
+        $this->assertEquals($expected,$result,"Correct");
+    }
+
 
 }

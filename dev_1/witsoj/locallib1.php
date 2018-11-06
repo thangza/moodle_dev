@@ -1475,7 +1475,6 @@ class assign_feedback_witsoj
      *
      * @param stdClass $grade The grade
      * @return string
-     * @codeCoverageIgnore
      */
     public function text_for_gradebook(stdClass $grade)
     {
