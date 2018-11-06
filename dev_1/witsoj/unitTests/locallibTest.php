@@ -148,15 +148,5 @@ class locallibTest extends TestCase{
       $this->assertEquals("Nothing to display", $result);
     }
 
-  public function testHello(){
-    $tester=new assign_feedback_witsoj;
-    $result=$tester->helloWorld();
-    $this->assertEquals('Hello world',$result,'can access locallib');
-  }
-
-  public function testTrueisTrue(){
-    $foo = true;
-    $this->assertTrue($foo);
-  }
 
 }

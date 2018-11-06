@@ -106,11 +106,6 @@ class assign_feedback_witsoj
         $getter->execute();
         $result=$getter->fetchObject();
         return $result;
-
-    //  return 'Hello world';
-    }
-    public function helloWorld(){
-      return 'Hello world';
     }
 
     /**
