@@ -54,9 +54,18 @@ class locallibTest extends TestCase{
   }
 
 
-  public function test_view_summary(){
+  public function test_view_summary_pending(){
     $db=$this->getConnection();
     $stmt=$db->prepare("UPDATE mdl_assignfeedback_witsoj SET status = 0 WHERE id=1");
+    $stmt->execute();
+    $tester=new assign_feedback_witsoj;
+    $result = $tester->view_summary(1);
+    $expected = 1;
+    $this->assertEquals($expected,$result,"Correct");
+  }
+  public function test_view_summary_judging(){
+    $db=$this->getConnection();
+    $stmt=$db->prepare("UPDATE mdl_assignfeedback_witsoj SET status = 1 WHERE id=1");
     $stmt->execute();
     $tester=new assign_feedback_witsoj;
     $result = $tester->view_summary(1);
