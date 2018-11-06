@@ -117,12 +117,14 @@
         "compile" : {},
         "compile_tests" : {},
         "commands": {
+            "checkSource" : "~markers~/checkEnd ~sourcefile~",
             "makeTester" : "printf \"clear;\\ncd ~path~\\noutfile = sprintf('outfile_~input_noex~.tmp');\\nfh = fopen(outfile, 'w');\\nstr = 'Time limit exceeded';\\nstr = evalc('~input_noex~()');\\nfprintf(fh, '%%s', str);\\nfclose(fh);\\n\" > tester.m",
+            "checkInput" : "~markers~/checkEnd ~input~",
             "makeCaller" : "printf \"\\n\\n\" | cat - ~sourcefile~ >> ~input~",
             "matlabd": "~markers~/matlabd tester.m ~timeout~",
             "run": "cat outfile_~input_noex~.tmp"
         }
-    },
+},
 "13": {
         "name": "matlabzip",
         "extension": "zip",
@@ -131,9 +133,6 @@
 	    "limit": "touch ~markerid~",
 	    "t" : "touch timer-~timeout~"
 	},
-        "compile_tests" : {
-            "limit": "10"
-        },
         "commands": {
             "makeTester" : "printf \"clear;\\ncd ~path~\\noutfile = sprintf('outfile_~input_noex~.tmp');\\nfh = fopen(outfile, 'w');\\nstr = 'Time limit exceeded';\\nstr = evalc('~input_noex~()');\\nfprintf(fh, '%%s', str);\\nfclose(fh);\\n\" > tester.m",
             "matlabd": "~markers~/matlabd tester.m ~timeout~",
@@ -171,4 +170,3 @@
         }
     }
 }
-
