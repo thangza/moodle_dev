@@ -190,6 +190,7 @@ class assign_feedback_witsoj
      *
      * @return boolean - True if the plugin supports quickgrading
      */
+     //Do not ignore
     public function supports_quickgrading()
     {
         return false;
