@@ -1454,11 +1454,10 @@ class assign_feedback_witsoj
      *
      * @param stdClass $grade The grade
      * @return int
-     * @codeCoverageIgnore
      */
-    public function format_for_gradebook(stdClass $grade)
+    public function format_for_gradebook($grade_id)
     {
-        $feedbackcomments = $this->get_feedback_witsoj($grade->id);
+        $feedbackcomments = $this->get_feedback_witsoj($grade_id);
         if ($feedbackcomments) {
             return $feedbackcomments->commentformat;
         }

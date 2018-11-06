@@ -181,5 +181,16 @@ class locallibTest extends TestCase{
         $this->assertEquals($expected,$result,"Correct");
     }
 
+    public function test_format_for_gradebook(){
+        $db=$this->getConnection();
+        $stmt=$db->prepare("SELECT commentformat FROM mdl_assignfeedback_witsoj WHERE id=1");
+        $stmt->execute();
+        $expected =$stmt->fetchColumn();
+        $tester = new assign_feedback_witsoj;
+        $result = $tester->format_for_gradebook(1);
+        $this->assertEquals($expected, $result); 
+
+    }
+
 
 }
