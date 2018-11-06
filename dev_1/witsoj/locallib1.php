@@ -98,7 +98,7 @@ class assign_feedback_witsoj
       $mysql_host = getenv('MYSQL_HOST') ?: 'localhost';
       $mysql_user = getenv('MYSQL_USER') ?: 'root';
       $mysql_password = getenv('MYSQL_PASSWORD') ?: '';
-      $connection_string = "mysqget_stringl:host={$mysql_host};dbname=moodle";
+      $connection_string = "mysql:host={$mysql_host};dbname=moodle";
       $DB = new PDO($connection_string, $mysql_user, $mysql_password);
       //  global $DB;
       //  return $DB->get_record('assignfeedback_witsoj', array('grade'=>$gradeid));
@@ -189,7 +189,6 @@ class assign_feedback_witsoj
      * Override to indicate a plugin supports quickgrading.
      *
      * @return boolean - True if the plugin supports quickgrading
-     * @codeCoverageIgnore
      */
     public function supports_quickgrading()
     {
