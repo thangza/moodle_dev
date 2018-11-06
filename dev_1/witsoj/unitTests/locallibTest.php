@@ -151,10 +151,17 @@ class locallibTest extends TestCase{
     public function test_text_for_gradebook(){
         $id = 11;
         $tester=new assign_feedback_witsoj;
-        $expected = tester->get_feedback_witsoj($id)->commenttext;
-        if(is_null($expected)){
-          $expected = '';
-        }
+        $expectedGrade = $tester->get_feedback_witsoj($id);
+        $expected = $expectedGrade->commenttext;
+        $result = $tester->text_for_gradebook($id);
+        $this->assertEquals($expected,$result,"Correct");
+    }
+
+    public function test_text_for_gradebook_null(){
+        $id = 11000;
+        $tester=new assign_feedback_witsoj;
+        $expected = '';
+        $result = $tester->text_for_gradebook($id);
         $this->assertEquals($expected,$result,"Correct");
     }
 

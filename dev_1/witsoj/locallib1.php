@@ -1476,9 +1476,9 @@ class assign_feedback_witsoj
      * @param stdClass $grade The grade
      * @return string
      */
-    public function text_for_gradebook(stdClass $grade)
+    public function text_for_gradebook($id)
     {
-        $feedbackcomments = $this->get_feedback_witsoj($grade->id);
+        $feedbackcomments = $this->get_feedback_witsoj($id);
         if ($feedbackcomments) {
             return $feedbackcomments->commenttext;
         }
