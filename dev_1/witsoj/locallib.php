@@ -1044,22 +1044,50 @@ class assign_feedback_witsoj extends assign_feedback_plugin
                 //$jsond = json_decode($sub);
                 $jsond = json_decode($ojtests, true) ;
             }
+            echo "<table border=1 cellspacing=0 cellpading=0>" ;
             if ($this->can_rejudge()) {
                 // lecturer
-                if ($jsond[0]['result'] != 2) {
-                    $testcase = required_param('testcase', PARAM_INT);
-                    echo "The test case were: Progout = ".$jsond[$testcase]['progout']." and the Correct output = ".$jsond[$testcase]['modelout'];
-                } else {
-                    echo $jsond[0]['stderr'] ;
-                }
-            } else {
+                //$jsond[0]['result'] != 2
+              if ($jsond[0]['stderr']) {
+                  //echo "<table>";
+                  $row1 = "Standard Error";
+                  $error_out = $jsond[0]['stderr'];
+                  //testcase = required_param('testcase', PARAM_INT);
+                  //echo "The test case were: Progout = ".$jsond[$testcase]['progout']." and the Correct output = ".$jsond[$testcase]['modelout'];
+                  echo "<tr>";
+                  echo "<td>$row1</td>";
+                  echo "</tr>";
+                  echo "<tr>";
+                  echo "<td>$error_out</td>";
+                  echo "</tr>";
+              } else {
+                  $row1 = "Student output ";
+                  $row2 = "Correct output ";
+                  $testcase = required_param('testcase', PARAM_INT);
+                  $student_out = $jsond[$testcase]['progout'];
+                  $teacher_out = $jsond[$testcase]['modelout'];
+
+                  echo "<tr><td>$row1</td><td>$row2</td></tr>";
+                  echo "<tr><td>$student_out</td><td>$teacher_out</td></tr>";
+                  //echo "The test case were: Progout = ".$jsond[$testcase]['progout']." and the Correct output = ".$jsond[$testcase]['modelout'];
+              }
+             }else {
                 // student
-                if ($jsond[0]['result'] == 2) {
-                    echo $jsond[0]['stderr'];
+                if ($jsond[0]['stderr']) {
+                    $row1 = "Standard Error";
+                    $error_out = $jsond[0]['stderr'];
+
+                    echo "<tr>";
+                    echo "<td>$row1</td>";
+                    echo "</tr>";
+                    echo "<tr>";
+                    echo "<td>$error_out</td>";
+                    echo "</tr>";
                 } else {
-                    echo "Nice try but no solutions to show :) " ;
+                    echo "Permission Denied" ;
                 }
             }
+            echo "</table>";
         }
     }
 
@@ -1180,7 +1208,7 @@ class assign_feedback_witsoj extends assign_feedback_plugin
             $rejudge_all = $this->get_rejudge_all_url();
             $prod = $this->get_prod_url();
             //$buttons .= "<form method='post' action='#'>";
-            $buttons .=  "<a class='btn btn-secondary' href='$rejudge_cur'style='margin-bottom:5px;margin-right:5px;'>Rejudge</a>";
+            $buttons .=  "<a class='btn btn-secondary' href='$rejudge_cur' style='margin-bottom:5px;margin-right:5px;' target='_blank'>Rejudge</a>";
             //$buttons .=  "<a class='btn btn-secondary' href='$rejudge_all'style='margin-bottom:5px;'>Rejudge All</a><br/>";
             //$buttons .=  "<a class='btn btn-secondary' href='$prod'style='margin-bottom:5px;'>Prod</a><br/>";
         //$buttons .= "</form><br/>";
@@ -1202,8 +1230,8 @@ class assign_feedback_witsoj extends assign_feedback_plugin
             // Show the view all link if the text has been shortened.
             #$showviewlink = $short != $text;
             $showviewlink = $short != $text;
-
-            return $buttons."<div id='tmp'>".$text."</div>";
+            $id = $grade->id;
+            return $buttons."<div id='tmp$id'>".$text."</div>";
         }
         return $buttons."<div id='tmp'></div>";
     }
@@ -1384,3 +1412,4 @@ class assign_feedback_witsoj extends assign_feedback_plugin
         return (array) $this->get_config();
     }
 }
+
